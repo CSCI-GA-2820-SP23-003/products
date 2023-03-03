@@ -7,7 +7,6 @@ Describe what your service does here
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from service.common import status  # HTTP Status Codes
 from service.models import Product
-from flask import jsonify, request, url_for, abort
 
 # Import Flask application
 from . import app
@@ -50,6 +49,7 @@ def create_products():
     app.logger.info("Product with ID [%s] created.", product.id)
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
+
 ######################################################################
 # READ A PRODUCT
 ######################################################################
@@ -63,10 +63,9 @@ def get_products(product_id):
     product = Product.find(product_id)
     if not product:
         abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
-    
+
     app.logger.info("Returning product: %s", product.name)
     return jsonify(product.serialize()), status.HTTP_200_OK
-
 
 
 ######################################################################
@@ -89,5 +88,4 @@ def check_content_type(content_type):
     app.logger.error("Invalid Content-Type: %s", request.headers["Content-Type"])
     abort(
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        f"Content-Type must be {content_type}",
-    )
+        f"Content-Type must be {content_type}",)
