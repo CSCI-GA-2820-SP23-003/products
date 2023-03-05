@@ -1,5 +1,5 @@
 """
-TestYourResourceModel API Service Test Suite
+Test Products API Service Test Suite
 
 Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
@@ -23,7 +23,7 @@ BASE_URL = "/products"
 ######################################################################
 
 
-class TestYourResourceServer(TestCase):
+class TestProductsServer(TestCase):
     """ REST API Server Tests """
 
     @classmethod
