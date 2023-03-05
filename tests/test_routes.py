@@ -52,7 +52,7 @@ class TestYourResourceServer(TestCase):
         db.session.remove()
 
     def _create_products(self, count):
-        """Factory method to create pets in bulk"""
+        """Factory method to create products in bulk"""
         products = []
         for _ in range(count):
             test_product = ProductFactory()
@@ -76,7 +76,7 @@ class TestYourResourceServer(TestCase):
 
     def test_get_product(self):
         """It should Get a single Product"""
-        # get the id of a pet
+        # get the id of a product
         test_product = self._create_products(1)[0]
         response = self.client.get(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
