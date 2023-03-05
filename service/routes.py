@@ -48,9 +48,13 @@ def create_products():
     """
     app.logger.info("Request to create a product")
     check_content_type("application/json")
+    
+    # Create the Product
     product = Product()
     product.deserialize(request.get_json())
     product.create()
+    
+    # Create a message to return
     message = product.serialize()
     location_url = url_for("get_products", product_id=product.id, _external=True)
 
