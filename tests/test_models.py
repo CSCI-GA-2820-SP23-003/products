@@ -26,6 +26,7 @@ DATABASE_URI = os.getenv(
 #  P R O D U C T   M O D E L   T E S T   C A S E S
 ######################################################################
 
+
 class TestProductModel(unittest.TestCase):
     """ Test Cases for ProductModel Model """
 
@@ -67,7 +68,8 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(product.category, "dairy")
         self.assertEqual(product.inventory, 5)
         self.assertEqual(product.created_date, date.today())
-        product = Product(name="Cheese", desc="This is more popular", price=7.5, category="dairy", inventory=10, created_date=date.today())
+        product = Product(name="Cheese", desc="This is more popular", price=7.5,
+                          category="dairy", inventory=10, created_date=date.today())
         self.assertEqual(product.desc, "This is more popular")
         self.assertEqual(product.price, 7.5)
         self.assertEqual(product.inventory, 10)
