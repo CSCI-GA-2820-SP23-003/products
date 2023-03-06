@@ -64,7 +64,7 @@ class TestProductsServer(TestCase):
             test_product.id = new_product["id"]
             products.append(test_product)
         return products
-
+        
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
@@ -90,3 +90,23 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
+
+    def test_update_product(self):
+        """It should Update a Product"""
+        # get the id of a product
+        test_product = self._create_products(1)[0]
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # update the product
+        new_product = response.get_json()
+        new_product["name"] = "new name"
+        
+        new_product = ProductFactory()
+        logging.debug(new_product)
+        response = self.client.put(
+            f"{BASE_URL}/{test_product.id}", json=new_product.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["name"], new_product.name)
