@@ -70,13 +70,13 @@ def get_products(product_id):
 
 
 ######################################################################
-# UPDATE AN EXISTING PRODUCT
+# UPDATE A PRODUCT
 ######################################################################
 @app.route("/products/<int:product_id>", methods=["PUT"])
 def update_products(product_id):
     """
-    Update an existing Product
-    This endpoint will update a Product based the body that is posted
+    Update a Product
+    This endpoint will update a Product based on the body that is posted
     """
     app.logger.info("Request to update product with id: %s", product_id)
     check_content_type("application/json")
