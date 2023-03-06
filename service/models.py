@@ -123,7 +123,6 @@ class Product(db.Model):
             if "desc" in data:
                 self.desc = data["desc"]
 
-            # if isinstance(data["price"], float) or (data["price"] and data["price"].isdigit()):
             if isinstance(data["price"], float):
                 self.price = data["price"]
             else:
