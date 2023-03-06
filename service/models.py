@@ -122,17 +122,36 @@ class Product(db.Model):
             self.name = data["name"]
             if "desc" in data:
                 self.desc = data["desc"]
-            self.price = data["price"]
+
+            if isinstance(data["price"], float):
+                self.price = data["price"]
+            else:
+                raise DataValidationError(
+                    "Invalid type for float [price]: "
+                    + str(type(data["price"]))
+                )
+            
+            if data["price"] >= 0:
+                self.price = data["price"]
+            else:
+                raise DataValidationError(
+                    "Invalid value for price. Price should be a non-negative value"
+                )
+            
             self.category = data["category"]
             self.inventory = data["inventory"]
             self.discount = data["discount"]
             self.created_date = date.fromisoformat(data["created_date"])
             if "modified_date" in data:
                 self.modified_date = date.fromisoformat(data["modified_date"])
-            if "deleted_date" in data:
+            if "deleted_date" in data and (data["created_date"] <= data["deleted_date"]):
                 self.deleted_date = date.fromisoformat(data["deleted_date"])
-        except AttributeError as error:
-            raise DataValidationError("Invalid attribute: " + error.args[0]) from error
+            else:
+                raise DataValidationError(
+                    "Invalid value for deleted_date. Deleted_date should be greater than Created_date"
+                )
+        # except AttributeError as error:
+        #     raise DataValidationError("Invalid attribute: " + error.args[0]) from error
         except KeyError as error:
             raise DataValidationError("Invalid product: missing " + error.args[0]) from error
         except TypeError as error:

@@ -1,7 +1,10 @@
 """
-My Service
+Products Service
 
-Describe what your service does here
+Paths:
+------
+GET /products/{id} - Returns the Product with a given id number
+POST /products - creates a new Product record in the database
 """
 
 from flask import Flask, jsonify, request, url_for, make_response, abort
@@ -18,8 +21,13 @@ from . import app
 @app.route("/")
 def index():
     """ Root URL response """
+    app.logger.info("Request for Root URL")
     return (
-        "Reminder: return some useful information in json format about the service here",
+        jsonify(
+            name="Product Demo REST API Service",
+            version="1.0",
+            paths=url_for("create_products", _external=True),
+        ),
         status.HTTP_200_OK,
     )
 
@@ -40,9 +48,13 @@ def create_products():
     """
     app.logger.info("Request to create a product")
     check_content_type("application/json")
+    
+    # Create the Product
     product = Product()
     product.deserialize(request.get_json())
     product.create()
+    
+    # Create a message to return
     message = product.serialize()
     location_url = url_for("get_products", product_id=product.id, _external=True)
 
