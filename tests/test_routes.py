@@ -97,16 +97,38 @@ class TestProductsServer(TestCase):
         test_product = self._create_products(1)[0]
         response = self.client.get(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # update the product
-        new_product = response.get_json()
-        new_product["name"] = "new name"
         
-        new_product = ProductFactory()
-        logging.debug(new_product)
-        response = self.client.put(
-            f"{BASE_URL}/{test_product.id}", json=new_product.serialize()
-        )
+        # Update the product
+        test_product = response.get_json()
+        logging.debug(test_product)
+        test_product["name"] = "Tomato"
+        test_product["category"] = "Vegetable"
+        test_product["price"] = test_product["price"] * 2
+        
+        response = self.client.put(f"{BASE_URL}/{test_product.id}", json=test_product)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        updated_product = response.get_json()
+        self.assertEqual(updated_product["id"], test_product["id"])
+        self.assertEqual(updated_product["name"], "Tomato")
+        self.assertEqual(updated_product["des"], test_product["des"])
+        self.assertEqual(updated_product["price"], test_product["price"] * 2)
+        self.assertEqual(updated_product["category"], "Vegetable")
+        self.assertEqual(updated_product["inventory"], test_product["inventory"])
+        self.assertEqual(updated_product["discount"], test_product["discount"])
+        self.assertEqual(updated_product["created_date"], test_product["created_date"])
+        self.assertEqual(updated_product["modified_date"], test_product["modified_date"])
+        self.assertEqual(updated_product["deleted_date"], test_product["deleted_date"])
+        
+
+    
+    def test_update_product_not_found(self):
+        """It should not Update a Product thats not found"""
+        test_product = ProductFactory()
+        response = self.client.put(f"{BASE_URL}/{test_product.id}", json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         data = response.get_json()
-        self.assertEqual(data["name"], new_product.name)
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+        self.assertEqual(data["message"], "Product with id %s was not found", test_product.id)
+                        
