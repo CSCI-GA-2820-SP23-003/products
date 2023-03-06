@@ -67,7 +67,7 @@ class TestProductsServer(TestCase):
             test_product.id = new_product["id"]
             products.append(test_product)
         return products
-
+        
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
@@ -94,6 +94,46 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+    def test_update_product(self):
+        """It should Update a Product"""
+        # get the id of a product
+        test_product = self._create_products(1)[0]
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Update the product
+        test_product = response.get_json()
+        test_product_price = test_product["price"]
+        logging.debug(test_product)
+        new_price = test_product_price * 2
+        test_product["name"] = "Tomato"
+        test_product["category"] = "Vegetable"
+        test_product["price"] = new_price
+        response = self.client.put(f"{BASE_URL}/{test_product['id']}", json=test_product)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_product = response.get_json()
+        
+        self.assertEqual(updated_product["id"], test_product["id"])
+        self.assertEqual(updated_product["name"], "Tomato")
+        self.assertEqual(updated_product["desc"], test_product["desc"])
+        self.assertEqual(updated_product["price"], new_price)
+        self.assertEqual(updated_product["category"], "Vegetable")
+        self.assertEqual(updated_product["inventory"], test_product["inventory"])
+        self.assertEqual(updated_product["discount"], test_product["discount"])
+        self.assertEqual(updated_product["created_date"], test_product["created_date"])
+        self.assertEqual(updated_product["modified_date"], test_product["modified_date"])
+        self.assertEqual(updated_product["deleted_date"], test_product["deleted_date"])
+    
+    def test_update_product_not_found(self):
+        """It should not Update a Product thats not found"""
+        test_product = ProductFactory()
+        response = self.client.put(f"{BASE_URL}/{test_product.id}", json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+        # self.assertEqual(data["message"], "Product with id %s was not found", test_product.id)
+                        
     def test_create_product(self):
         """It should Create a new Product"""
         test_product = ProductFactory()
@@ -172,3 +212,4 @@ class TestProductsServer(TestCase):
         """ It should not Create a Product with no content type """
         response = self.client.post(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
