@@ -57,15 +57,41 @@ def create_products():
 def get_products(product_id):
     """
     Retrieve a single Product
-    This endpoint will return a Product based on it's id
+    This endpoint will return a Product based on its id
     """
     app.logger.info("Request for product with id: %s", product_id)
     product = Product.find(product_id)
     if not product:
         abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
-
+    message = product.serialize()
+    
     app.logger.info("Returning product: %s", product.name)
-    return jsonify(product.serialize()), status.HTTP_200_OK
+    return jsonify(message), status.HTTP_200_OK
+
+
+######################################################################
+# UPDATE AN EXISTING PRODUCT
+######################################################################
+@app.route("/products/<int:product_id>", methods=["PUT"])
+def update_products(product_id):
+    """
+    Update an existing Product
+    This endpoint will update a Product based the body that is posted
+    """
+    app.logger.info("Request to update product with id: %s", product_id)
+    check_content_type("application/json")
+    
+    product = Product.find(product_id)
+    if not product:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
+        
+    product.deserialize(request.get_json())
+    product.id = product_id
+    product.update()
+    message = product.serialize()
+    
+    app.logger.info("Product with id [%s] updated.", product.id)
+    return jsonify(message), status.HTTP_200_OK
 
 
 ######################################################################
