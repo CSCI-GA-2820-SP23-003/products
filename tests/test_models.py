@@ -106,7 +106,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found_product.created_date, product.created_date)
 
     def test_update_a_product(self):
-        """It should Update a Product"""
+        """It should Update an existing Product"""
         product = ProductFactory()
         logging.debug(product)
         product.id = None
