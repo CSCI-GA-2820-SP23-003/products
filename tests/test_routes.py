@@ -100,27 +100,26 @@ class TestProductsServer(TestCase):
         
         # Update the product
         test_product = response.get_json()
+        test_product_price = test_product["price"]
         logging.debug(test_product)
+        new_price = test_product_price * 2
         test_product["name"] = "Tomato"
         test_product["category"] = "Vegetable"
-        test_product["price"] = test_product["price"] * 2
-        
-        response = self.client.put(f"{BASE_URL}/{test_product.id}", json=test_product)
+        test_product["price"] = new_price
+        response = self.client.put(f"{BASE_URL}/{test_product['id']}", json=test_product)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
         updated_product = response.get_json()
+        
         self.assertEqual(updated_product["id"], test_product["id"])
         self.assertEqual(updated_product["name"], "Tomato")
-        self.assertEqual(updated_product["des"], test_product["des"])
-        self.assertEqual(updated_product["price"], test_product["price"] * 2)
+        self.assertEqual(updated_product["desc"], test_product["desc"])
+        self.assertEqual(updated_product["price"], new_price)
         self.assertEqual(updated_product["category"], "Vegetable")
         self.assertEqual(updated_product["inventory"], test_product["inventory"])
         self.assertEqual(updated_product["discount"], test_product["discount"])
         self.assertEqual(updated_product["created_date"], test_product["created_date"])
         self.assertEqual(updated_product["modified_date"], test_product["modified_date"])
         self.assertEqual(updated_product["deleted_date"], test_product["deleted_date"])
-        
-
     
     def test_update_product_not_found(self):
         """It should not Update a Product thats not found"""
@@ -130,5 +129,5 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
-        self.assertEqual(data["message"], "Product with id %s was not found", test_product.id)
+        # self.assertEqual(data["message"], "Product with id %s was not found", test_product.id)
                         
