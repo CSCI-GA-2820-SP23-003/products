@@ -127,6 +127,20 @@ class TestProductsServer(TestCase):
         self.assertEqual(new_product["inventory"], test_product.inventory)
         self.assertEqual(new_product["discount"], test_product.discount)
 
+    def test_create_customer_valid_id(self):
+        """It should check if a Product has been created with a valid ID"""
+
+        test_product = ProductFactory.create_batch(5)
+        for prod in test_product:
+            logging.debug(prod)
+            prod_post_req = self.client.post(BASE_URL, json=prod.serialize())
+
+            # Assert that the product has been created successfully
+            self.assertEqual(prod_post_req.status_code, status.HTTP_201_CREATED, "Product did not get created")
+
+            created_product = prod_post_req.get_json()
+            self.assertIsNotNone(created_product["id"], "IDs haven't been created")
+
     def test_create_product_negative_price(self):
         """ It should identify the price is invalid if price is negative """
         test_product = ProductFactory()
@@ -202,3 +216,11 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
+
+    def test_method_not_allowed(self):
+        """It should not allow an illegal method call"""
+        # test_product = ProductFactory()
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)

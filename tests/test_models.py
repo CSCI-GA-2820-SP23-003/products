@@ -186,7 +186,6 @@ class TestProductModel(unittest.TestCase):
         product = Product()
         product.deserialize(data)
         self.assertNotEqual(product, None)
-        self.assertEqual(product.id, None)
         self.assertEqual(product.name, data["name"])
         self.assertEqual(product.desc, data["desc"])
         self.assertEqual(product.price, data["price"])

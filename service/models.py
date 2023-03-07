@@ -100,14 +100,14 @@ class Product(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "desc": self.desc,
+            "desc": self.desc if self.desc is not None else None,
             "price": self.price,
             "category": self.category,
             "inventory": self.inventory,
             "discount": self.discount,
             "created_date": self.created_date.isoformat(),
-            "modified_date": self.modified_date.isoformat(),
-            "deleted_date": self.deleted_date.isoformat()
+            "modified_date": self.modified_date.isoformat() if self.modified_date is not None else None,
+            "deleted_date": self.deleted_date.isoformat() if self.deleted_date is not None else None
         }
 
     def deserialize(self, data):
@@ -144,12 +144,13 @@ class Product(db.Model):
             self.created_date = date.fromisoformat(data["created_date"])
             if "modified_date" in data:
                 self.modified_date = date.fromisoformat(data["modified_date"])
-            if "deleted_date" in data and (data["created_date"] <= data["deleted_date"]):
-                self.deleted_date = date.fromisoformat(data["deleted_date"])
-            else:
-                raise DataValidationError(
-                    "Invalid value for deleted_date. Deleted_date should be greater than Created_date"
-                )
+            if "deleted_date" in data:
+                if (data["created_date"] <= data["deleted_date"]):
+                    self.deleted_date = date.fromisoformat(data["deleted_date"])
+                else:
+                    raise DataValidationError(
+                        "Invalid value for deleted_date. Deleted_date should be greater than Created_date"
+                    )
         # except AttributeError as error:
         #     raise DataValidationError("Invalid attribute: " + error.args[0]) from error
         except KeyError as error:
