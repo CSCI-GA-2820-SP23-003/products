@@ -133,7 +133,21 @@ def list_products():
     This endpoint will list all the products.
     """
     app.logger.info("Request to list all products.")
-    products = Product.all()
+    
+    products = []
+    name = request.args.get("name")
+    category = request.args.get("category")
+    price = request.args.get("price")
+
+    if name:
+        products = Product.find_by_name(name)
+    elif category:
+        products = Product.find_by_category(category)
+    elif price:
+        products = Product.find_by_price(price)
+    else:
+        products = Product.all()
+
     results = [product.serialize() for product in products]
     app.logger.info(f"Returning {len(results)} products.")
     response = jsonify(results), status.HTTP_200_OK
