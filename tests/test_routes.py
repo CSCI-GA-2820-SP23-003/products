@@ -217,6 +217,25 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+    def test_delete_product_not_found(self):
+        """It should delete a Product thats not found"""
+        response = self.client.delete(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_product(self):
+        """It should delete a Product thats found"""
+        test_product = self._create_products(1)[0]
+        response = self.client.delete(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_product_repeatedly(self):
+        """It should delete a Product thats already deleted"""
+        test_product = self._create_products(1)[0]
+        N = 5
+        for _ in range(N):
+            response = self.client.delete(f"{BASE_URL}/{test_product.id}")
+            self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
     def test_method_not_allowed(self):
         """It should not allow an illegal method call"""
         # test_product = ProductFactory()
