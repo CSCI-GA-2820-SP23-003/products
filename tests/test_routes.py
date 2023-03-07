@@ -254,4 +254,16 @@ class TestProductsServer(TestCase):
         self.assertEqual(len(response_data), count)
         for product in response_data:
             self.assertEqual(product["name"], name)
+    
+    def test_list_products_with_category(self):
+        """List all the products with a particular name"""
+        products = self._create_products(5)
+        category = products[0].category
+        count = len([product for product in products if product.category == category])
+        response = self.client.get(f"{BASE_URL}?category={category}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.get_json()
+        self.assertEqual(len(response_data), count)
+        for product in response_data:
+            self.assertEqual(product["category"], category)
 
