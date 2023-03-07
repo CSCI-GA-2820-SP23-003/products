@@ -1,31 +1,28 @@
-# NYU DevOps Project Template
+# NYU DevOps Project - Product Service
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
-This is a skeleton you can use to start your projects
+Products Service - Representation of the products for a catalog where merchants can add updates and display products.
+
 
 ## Overview
 
-This project template contains starter code for your class project. The `/service` folder contains your `models.py` file for your model and a `routes.py` file for your service. The `/tests` folder has test case starter code for testing the model and the service separately. All you need to do is add your functionality. You can use the [lab-flask-tdd](https://github.com/nyu-devops/lab-flask-tdd) for code examples to copy from.
+This project the code for Orders Service for Product service. The `/service` folder contains the  `models.py` file for Product model and a `routes.py` file for Product service. The `/tests` folder has test case for testing the model and the service separately.
 
-## Automatic Setup
+## Running the service locally
+Before Run, make sure you have install vscode, Docker Desktop, Remote Containers extension first. Then you could clone the repository and then run the following commands:
 
-The best way to use this repo is to start your own repo using it as a git template. To do this just press the green **Use this template** button in GitHub and this will become the source for your repository.
+- ```cd products```
+- ```code .```
+- Reopen the folder in Dev Container
+- Run ```flask run``` command on the terminal
+- The service is available at localhost: ```http://localhost:8000```
 
-## Manual Setup
+To run the all the test cases locally, please run the command nosetests. The test cases have 96% code coverage currently.
 
-You can also clone this repository and then copy and paste the starter code into your project repo folder on your local computer. Be careful not to copy over your own `README.md` file so be selective in what you copy.
 
-There are 4 hidden files that you will need to copy manually if you use the Mac Finder or Windows Explorer to copy files from this folder into your repo folder.
 
-These should be copied using a bash shell as follows:
-
-```bash
-    cp .gitignore  ../<your_repo_folder>/
-    cp .flaskenv ../<your_repo_folder>/
-    cp .gitattributes ../<your_repo_folder>/
-```
 
 ## Contents
 
