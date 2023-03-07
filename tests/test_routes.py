@@ -235,6 +235,7 @@ class TestProductsServer(TestCase):
         for _ in range(N):
             response = self.client.delete(f"{BASE_URL}/{test_product.id}")
             self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+<<<<<<< HEAD
 
     def test_method_not_allowed(self):
         """It should not allow an illegal method call"""
@@ -243,3 +244,12 @@ class TestProductsServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         data = response.get_json()
         logging.debug("Response data = %s", data)
+=======
+    
+    def test_list_products(self):
+        """This should list all products"""
+        products = self._create_products()
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.get_json()), len(products))
+>>>>>>> e42b49d (Add UT for list products API)
