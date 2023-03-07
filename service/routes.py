@@ -123,6 +123,23 @@ def delete_products(product_id):
     return jsonify(message="success"), status.HTTP_204_NO_CONTENT
 
 ######################################################################
+# LIST ALL PRODUCTS
+######################################################################
+
+@app.route("/products", methods=["GET"])
+def list_products():
+    """
+    Lists all products.
+    This endpoint will list all the products.
+    """
+    app.logger.info("Request to list all products.")
+    products = Product.all()
+    results = [product.serialize() for product in products]
+    app.logger.info(f"Returning {len(results)} products.")
+    response = jsonify(results), status.HTTP_200_OK
+    return response
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
