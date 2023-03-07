@@ -246,7 +246,7 @@ class TestProductsServer(TestCase):
     
     def test_list_products(self):
         """This should list all products"""
-        products = self._create_products()
+        products = self._create_products(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), len(products))
