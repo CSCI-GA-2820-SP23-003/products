@@ -105,6 +105,22 @@ def update_products(product_id):
     app.logger.info("Product with id [%s] updated.", product.id)
     return jsonify(message), status.HTTP_200_OK
 
+######################################################################
+# DELETE A PRODUCT
+######################################################################
+@app.route("/products/<int:product_id>", methods=["DELETE"])
+def delete_products(product_id):
+    """
+    Delete an existing Product
+    This endpoint will delete a Product based on it's id
+    """
+    app.logger.info("Request to delete product with id: %s", product_id)
+    product = Product.find(product_id)
+
+    if product:
+        product.delete()
+
+    return jsonify(message="success"), status.HTTP_204_NO_CONTENT
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
