@@ -21,6 +21,7 @@ deleted_date (timestamp) - the timestamp when the product is deleted
 
 """
 import logging
+
 # from enum import Enum
 from datetime import date
 from flask import Flask
@@ -34,12 +35,12 @@ db = SQLAlchemy()
 
 # Function to initialize the database
 def init_db(app):
-    """ Initializes the SQLAlchemy app """
+    """Initializes the SQLAlchemy app"""
     Product.init_db(app)
 
 
 class DataValidationError(Exception):
-    """ Used for an data validation errors when deserializing """
+    """Used for an data validation errors when deserializing"""
 
 
 class Product(db.Model):
@@ -90,13 +91,13 @@ class Product(db.Model):
         db.session.commit()
 
     def delete(self):
-        """ Removes a Product from the data store """
+        """Removes a Product from the data store"""
         logger.info("Deleting product %s", self.name)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a Product into a dictionary """
+        """Serializes a Product into a dictionary"""
         return {
             "id": self.id,
             "name": self.name,
@@ -106,8 +107,12 @@ class Product(db.Model):
             "inventory": self.inventory,
             "discount": self.discount,
             "created_date": self.created_date.isoformat(),
-            "modified_date": self.modified_date.isoformat() if self.modified_date is not None else None,
-            "deleted_date": self.deleted_date.isoformat() if self.deleted_date is not None else None
+            "modified_date": self.modified_date.isoformat()
+            if self.modified_date is not None
+            else None,
+            "deleted_date": self.deleted_date.isoformat()
+            if self.deleted_date is not None
+            else None,
         }
 
     def deserialize(self, data):
@@ -127,17 +132,16 @@ class Product(db.Model):
                 self.price = data["price"]
             else:
                 raise DataValidationError(
-                    "Invalid type for float [price]: "
-                    + str(type(data["price"]))
+                    "Invalid type for float [price]: " + str(type(data["price"]))
                 )
-            
+
             if data["price"] >= 0:
                 self.price = data["price"]
             else:
                 raise DataValidationError(
                     "Invalid value for price. Price should be a non-negative value"
                 )
-            
+
             self.category = data["category"]
             self.inventory = data["inventory"]
             self.discount = data["discount"]
@@ -145,7 +149,7 @@ class Product(db.Model):
             if "modified_date" in data:
                 self.modified_date = date.fromisoformat(data["modified_date"])
             if "deleted_date" in data:
-                if (data["created_date"] <= data["deleted_date"]):
+                if data["created_date"] <= data["deleted_date"]:
                     self.deleted_date = date.fromisoformat(data["deleted_date"])
                 else:
                     raise DataValidationError(
@@ -154,7 +158,9 @@ class Product(db.Model):
         # except AttributeError as error:
         #     raise DataValidationError("Invalid attribute: " + error.args[0]) from error
         except KeyError as error:
-            raise DataValidationError("Invalid product: missing " + error.args[0]) from error
+            raise DataValidationError(
+                "Invalid product: missing " + error.args[0]
+            ) from error
         except TypeError as error:
             raise DataValidationError(
                 "Invalid product: body of request contained bad or no data - "
@@ -168,7 +174,7 @@ class Product(db.Model):
 
     @classmethod
     def init_db(cls, app: Flask):
-        """ Initializes the database session
+        """Initializes the database session
 
         :param app: the Flask app
         :type data: Flask
@@ -183,13 +189,13 @@ class Product(db.Model):
 
     @classmethod
     def all(cls) -> list:
-        """ Returns all of the Product in the database """
+        """Returns all of the Product in the database"""
         logger.info("Processing all Products")
         return cls.query.all()
 
     @classmethod
     def find(cls, product_id: int):
-        """ Finds a Product by it's ID
+        """Finds a Product by it's ID
 
         :param product_id: the id of the Product to find
         :type product_id: int
