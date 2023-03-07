@@ -20,7 +20,7 @@ from . import app
 ######################################################################
 @app.route("/")
 def index():
-    """ Root URL response """
+    """Root URL response"""
     app.logger.info("Request for Root URL")
     return (
         jsonify(
@@ -48,12 +48,12 @@ def create_products():
     """
     app.logger.info("Request to create a product")
     check_content_type("application/json")
-    
+
     # Create the Product
     product = Product()
     product.deserialize(request.get_json())
     product.create()
-    
+
     # Create a message to return
     message = product.serialize()
     location_url = url_for("get_products", product_id=product.id, _external=True)
@@ -65,7 +65,7 @@ def create_products():
 ######################################################################
 # READ A PRODUCT
 ######################################################################
-@app.route('/products/<int:product_id>', methods=["GET"])
+@app.route("/products/<int:product_id>", methods=["GET"])
 def get_products(product_id):
     """
     Retrieve a single Product
@@ -74,9 +74,11 @@ def get_products(product_id):
     app.logger.info("Request for product with id: %s", product_id)
     product = Product.find(product_id)
     if not product:
-        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found."
+        )
     message = product.serialize()
-    
+
     app.logger.info("Returning product: %s", product.name)
     return jsonify(message), status.HTTP_200_OK
 
@@ -92,18 +94,21 @@ def update_products(product_id):
     """
     app.logger.info("Request to update product with id: %s", product_id)
     check_content_type("application/json")
-    
+
     product = Product.find(product_id)
     if not product:
-        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
-        
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found."
+        )
+
     product.deserialize(request.get_json())
     product.id = product_id
     product.update()
     message = product.serialize()
-    
+
     app.logger.info("Product with id [%s] updated.", product.id)
     return jsonify(message), status.HTTP_200_OK
+
 
 ######################################################################
 # DELETE A PRODUCT
@@ -122,9 +127,11 @@ def delete_products(product_id):
 
     return jsonify(message="success"), status.HTTP_204_NO_CONTENT
 
+
 ######################################################################
 # LIST ALL PRODUCTS
 ######################################################################
+
 
 @app.route("/products", methods=["GET"])
 def list_products():
@@ -133,7 +140,7 @@ def list_products():
     This endpoint will list all the products.
     """
     app.logger.info("Request to list all products.")
-    
+
     products = []
     name = request.args.get("name")
     category = request.args.get("category")
@@ -152,6 +159,7 @@ def list_products():
     app.logger.info(f"Returning {len(results)} products.")
     response = jsonify(results), status.HTTP_200_OK
     return response
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
@@ -173,4 +181,5 @@ def check_content_type(content_type):
     app.logger.error("Invalid Content-Type: %s", request.headers["Content-Type"])
     abort(
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        f"Content-Type must be {content_type}",)
+        f"Content-Type must be {content_type}",
+    )
