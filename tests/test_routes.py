@@ -256,7 +256,7 @@ class TestProductsServer(TestCase):
             self.assertEqual(product["name"], name)
     
     def test_list_products_with_category(self):
-        """List all the products with a particular name"""
+        """List all the products with a particular category"""
         products = self._create_products(5)
         category = products[0].category
         count = len([product for product in products if product.category == category])
