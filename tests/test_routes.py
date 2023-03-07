@@ -9,6 +9,7 @@ import os
 import logging
 from datetime import timedelta
 from unittest import TestCase
+
 # from unittest.mock import MagicMock, patch
 from service import app
 from service.models import db, init_db, Product
@@ -27,11 +28,11 @@ BASE_URL = "/products"
 
 
 class TestProductsServer(TestCase):
-    """ REST API Server Tests """
+    """REST API Server Tests"""
 
     @classmethod
     def setUpClass(cls):
-        """ This runs once before the entire test suite """
+        """This runs once before the entire test suite"""
         app.config["TESTING"] = True
         app.config["DEBUG"] = False
         # Set up the test database
@@ -41,17 +42,17 @@ class TestProductsServer(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """ This runs once after the entire test suite """
+        """This runs once after the entire test suite"""
         db.session.close()
 
     def setUp(self):
-        """ This runs before each test """
+        """This runs before each test"""
         self.client = app.test_client()
         db.session.query(Product).delete()  # clean up the last tests
         db.session.commit()
 
     def tearDown(self):
-        """ This runs after each test """
+        """This runs after each test"""
         db.session.remove()
 
     def _create_products(self, count):
@@ -61,19 +62,21 @@ class TestProductsServer(TestCase):
             test_product = ProductFactory()
             response = self.client.post(BASE_URL, json=test_product.serialize())
             self.assertEqual(
-                response.status_code, status.HTTP_201_CREATED, "Could not create test product"
+                response.status_code,
+                status.HTTP_201_CREATED,
+                "Could not create test product",
             )
             new_product = response.get_json()
             test_product.id = new_product["id"]
             products.append(test_product)
         return products
-        
+
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
 
     def test_index(self):
-        """ It should call the home page """
+        """It should call the home page"""
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
@@ -93,7 +96,7 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
-                        
+
     def test_create_product(self):
         """It should Create a new Product"""
         test_product = ProductFactory()
@@ -136,54 +139,58 @@ class TestProductsServer(TestCase):
             prod_post_req = self.client.post(BASE_URL, json=prod.serialize())
 
             # Assert that the product has been created successfully
-            self.assertEqual(prod_post_req.status_code, status.HTTP_201_CREATED, "Product did not get created")
+            self.assertEqual(
+                prod_post_req.status_code,
+                status.HTTP_201_CREATED,
+                "Product did not get created",
+            )
 
             created_product = prod_post_req.get_json()
             self.assertIsNotNone(created_product["id"], "IDs haven't been created")
 
     def test_create_product_negative_price(self):
-        """ It should identify the price is invalid if price is negative """
+        """It should identify the price is invalid if price is negative"""
         test_product = ProductFactory()
         logging.debug(test_product)
 
         test_product.price = float(-5)
-        response = self.client.post(BASE_URL, json = test_product.serialize())
+        response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_create_product_type_int(self):
-        """ It should identify the price is invalid if price is not type float """
+        """It should identify the price is invalid if price is not type float"""
         test_product = ProductFactory()
         logging.debug(test_product)
 
         test_product.price = 19
-        response = self.client.post(BASE_URL, json = test_product.serialize())
+        response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_create_product_price_type_string(self):
-        """ It should identify the price is invalid if price is not digit """
+        """It should identify the price is invalid if price is not digit"""
         test_product = ProductFactory()
         logging.debug(test_product)
 
         test_product.price = "s"
-        response = self.client.post(BASE_URL, json = test_product.serialize())
+        response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        
+
     def test_create_product_date(self):
-        """ It should identify the created_date/ deleted_date is invalid if created_date is greater than deleted_date """
+        """It should identify the created_date/ deleted_date is invalid if created_date is greater than deleted_date"""
         test_product = ProductFactory()
         logging.debug(test_product)
 
         test_product.created_date = test_product.deleted_date + timedelta(days=4)
-        response = self.client.post(BASE_URL, json = test_product.serialize())
+        response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_product_no_data(self):
-        """ It should not Create a Product with missing data """
-        response = self.client.post(BASE_URL, json = {})
+        """It should not Create a Product with missing data"""
+        response = self.client.post(BASE_URL, json={})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_product_no_content_type(self):
-        """ It should not Create a Product with no content type """
+        """It should not Create a Product with no content type"""
         response = self.client.post(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
@@ -193,7 +200,7 @@ class TestProductsServer(TestCase):
         test_product = self._create_products(1)[0]
         response = self.client.get(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # Update the product
         new_product = response.get_json()
         logging.debug(new_product)
@@ -207,11 +214,13 @@ class TestProductsServer(TestCase):
         self.assertEqual(updated_product["desc"], new_product["desc"])
         self.assertEqual(updated_product["price"], new_product["price"])
         self.assertEqual(updated_product["category"], "vegetable")
-    
+
     def test_update_product_not_found(self):
         """It should not Update a Product thats not found"""
         test_product = ProductFactory()
-        response = self.client.put(f"{BASE_URL}/{test_product.id}", json=test_product.serialize())
+        response = self.client.put(
+            f"{BASE_URL}/{test_product.id}", json=test_product.serialize()
+        )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         data = response.get_json()
         logging.debug("Response data = %s", data)
@@ -235,14 +244,14 @@ class TestProductsServer(TestCase):
         for _ in range(N):
             response = self.client.delete(f"{BASE_URL}/{test_product.id}")
             self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-    
+
     def test_list_products(self):
         """This should list all products"""
         products = self._create_products(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), len(products))
-    
+
     def test_list_products_with_name(self):
         """List all the products with a particular name"""
         products = self._create_products(5)
@@ -254,7 +263,7 @@ class TestProductsServer(TestCase):
         self.assertEqual(len(response_data), count)
         for product in response_data:
             self.assertEqual(product["name"], name)
-    
+
     def test_list_products_with_category(self):
         """List all the products with a particular category"""
         products = self._create_products(5)
@@ -268,14 +277,13 @@ class TestProductsServer(TestCase):
             self.assertEqual(product["category"], category)
 
     def test_list_products_with_price(self):
-            """List all the products with a particular price"""
-            products = self._create_products(5)
-            price = products[0].price
-            count = len([product for product in products if product.price == price])
-            response = self.client.get(f"{BASE_URL}?price={price}")
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            response_data = response.get_json()
-            self.assertEqual(len(response_data), count)
-            for product in response_data:
-                self.assertEqual(product["price"], price)
-
+        """List all the products with a particular price"""
+        products = self._create_products(5)
+        price = products[0].price
+        count = len([product for product in products if product.price == price])
+        response = self.client.get(f"{BASE_URL}?price={price}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.get_json()
+        self.assertEqual(len(response_data), count)
+        for product in response_data:
+            self.assertEqual(product["price"], price)
