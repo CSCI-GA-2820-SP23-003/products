@@ -19,7 +19,7 @@ Before Run, make sure you have install [Docker Desktop](https://www.docker.com/p
 - Run ```flask run``` command on the terminal
 - The service is available at localhost: ```http://localhost:8000```
 
-To run the all the test cases locally, please run the command nosetests. The test cases have 95% code coverage currently.
+To run the all the test cases locally, please run the command nosetests. The test cases have 96% code coverage currently.
 
 ## Products Service APIs
 
