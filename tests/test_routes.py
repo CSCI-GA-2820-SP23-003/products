@@ -287,3 +287,11 @@ class TestProductsServer(TestCase):
         self.assertEqual(len(response_data), count)
         for product in response_data:
             self.assertEqual(product["price"], price)
+
+    def test_method_not_allowed(self):
+        """It should not allow an illegal method call"""
+        test_product = ProductFactory()
+        response = self.client.post(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
