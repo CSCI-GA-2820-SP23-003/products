@@ -44,6 +44,7 @@ class DataValidationError(Exception):
     """Used for an data validation errors when deserializing"""
 
 
+# pylint: disable=too-many-instance-attributes
 class Product(db.Model):
     """
     Class that represents a Product

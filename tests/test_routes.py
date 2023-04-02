@@ -226,35 +226,35 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
-    def test_delete_product_not_found(self):
+    def _test_delete_product_not_found(self):
         """It should delete a Product thats not found"""
         response = self.client.delete(f"{BASE_URL}/0")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_product(self):
+    def _test_delete_product(self):
         """It should delete a Product thats found"""
         test_product = self._create_products(1)[0]
         response = self.client.delete(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_product_repeatedly(self):
+    def _test_delete_product_repeatedly(self):
         """It should delete a Product thats already deleted"""
         test_product = self._create_products(1)[0]
-        N = 5
-        for _ in range(N):
+        num_items = 5
+        for _ in range(num_items):
             response = self.client.delete(f"{BASE_URL}/{test_product.id}")
             self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_list_products(self):
+    def _test_list_products(self, products):
         """This should list all products"""
-        products = self._create_products(5)
+        # products = self._create_products(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), len(products))
 
-    def test_list_products_with_name(self):
+    def _test_list_products_with_name(self, products):
         """List all the products with a particular name"""
-        products = self._create_products(5)
+        # products = self._create_products(5)
         name = products[0].name
         count = len([product for product in products if product.name == name])
         response = self.client.get(f"{BASE_URL}?name={name}")
@@ -264,9 +264,9 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["name"], name)
 
-    def test_list_products_with_category(self):
+    def _test_list_products_with_category(self, products):
         """List all the products with a particular category"""
-        products = self._create_products(5)
+        # products = self._create_products(5)
         category = products[0].category
         count = len([product for product in products if product.category == category])
         response = self.client.get(f"{BASE_URL}?category={category}")
@@ -276,9 +276,9 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["category"], category)
 
-    def test_list_products_with_price(self):
+    def _test_list_products_with_price(self, products):
         """List all the products with a particular price"""
-        products = self._create_products(5)
+        # products = self._create_products(5)
         price = products[0].price
         count = len([product for product in products if product.price == price])
         response = self.client.get(f"{BASE_URL}?price={price}")
@@ -295,6 +295,20 @@ class TestProductsServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         data = response.get_json()
         logging.debug("Response data = %s", data)
+
+    def test_list_methods(self):
+        """It should test all the list test function"""
+        products = self._create_products(5)
+        self._test_list_products_with_price(products)
+        self._test_list_products_with_category(products)
+        self._test_list_products_with_name(products)
+        self._test_list_products(products)
+
+    def test_create_methods(self):
+        """It should test all the delete test function"""
+        self._test_delete_product()
+        self._test_delete_product_not_found()
+        self._test_delete_product_repeatedly()
 
 
     ######################################################################

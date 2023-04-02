@@ -269,7 +269,7 @@ class TestProductModel(unittest.TestCase):
         for product in found:
             self.assertEqual(product.price, price)
 
-    def test_find_or_404_found(self):
+    def _test_find_or_404_found(self):
         """It should Find or return 404 not found"""
         products = ProductFactory.create_batch(3)
         for product in products:
@@ -287,6 +287,12 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(product.like, products[1].like)
         self.assertEqual(product.created_date, products[1].created_date)
 
-    def test_find_or_404_not_found(self):
+    def _test_find_or_404_not_found(self):
         """It should return 404 not found"""
         self.assertRaises(NotFound, Product.find_or_404, 0)
+
+    def test_find_operation(self):
+        """It should test all the function related to find 404"""
+
+        self._test_find_or_404_found()
+        self._test_find_or_404_not_found()
