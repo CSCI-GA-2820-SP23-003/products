@@ -154,8 +154,14 @@ class Product(db.Model):
                 raise DataValidationError(
                     "Invalid type for int [like]: " + str(type(data["like"]))
                 )
-            
-            self.like = data["like"]
+
+            if data["like"] >= 0:
+                self.like = data["like"]
+            else:
+                raise DataValidationError(
+                    "Invalid value for like. Like should be a non-negative value"
+                )
+
             self.created_date = date.fromisoformat(data["created_date"])
             if "modified_date" in data:
                 self.modified_date = date.fromisoformat(data["modified_date"])

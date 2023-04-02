@@ -23,6 +23,7 @@ class ProductFactory(factory.Factory):
     category = FuzzyChoice(choices=["beverage", "dairy", "fresh food", "frozen"])
     inventory = FuzzyInteger(0, 40)
     discount = FuzzyChoice(choices=[0.3, 0.75, 0.9])
+    like = FuzzyInteger(0,100)
     created_date = date(2008, 1, 1)
     modified_date = date(2008, 1, 2)
     deleted_date = date(2008, 1, 3)
