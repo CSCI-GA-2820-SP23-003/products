@@ -103,6 +103,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found_product.category, product.category)
         self.assertEqual(found_product.inventory, product.inventory)
         self.assertEqual(found_product.discount, product.discount)
+        self.assertEqual(found_product.like, product.like)
         self.assertEqual(found_product.created_date, product.created_date)
 
     def test_update_a_product(self):
@@ -173,6 +174,8 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(data["inventory"], product.inventory)
         self.assertIn("discount", data)
         self.assertEqual(data["discount"], product.discount)
+        self.assertIn("like", data)
+        self.assertEqual(data["like"], product.like)
         self.assertIn("created_date", data)
         self.assertEqual(date.fromisoformat(data["created_date"]), product.created_date)
         self.assertIn("modified_date", data)
@@ -192,6 +195,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(product.category, data["category"])
         self.assertEqual(product.inventory, data["inventory"])
         self.assertEqual(product.discount, data["discount"])
+        self.assertEqual(product.like, data["like"])
         self.assertEqual(product.created_date, date.fromisoformat(data["created_date"]))
         self.assertEqual(product.modified_date, date.fromisoformat(data["modified_date"]))
         self.assertEqual(product.deleted_date, date.fromisoformat(data["deleted_date"]))
@@ -226,6 +230,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(product.category, products[1].category)
         self.assertEqual(product.inventory, products[1].inventory)
         self.assertEqual(product.discount, products[1].discount)
+        self.assertEqual(product.like, products[1].like)
         self.assertEqual(product.created_date, products[1].created_date)
 
     def test_find_by_category(self):
@@ -279,6 +284,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(product.category, products[1].category)
         self.assertEqual(product.inventory, products[1].inventory)
         self.assertEqual(product.discount, products[1].discount)
+        self.assertEqual(product.like, products[1].like)
         self.assertEqual(product.created_date, products[1].created_date)
 
     def test_find_or_404_not_found(self):
