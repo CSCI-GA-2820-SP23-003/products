@@ -310,11 +310,9 @@ class TestProductsServer(TestCase):
         self._test_delete_product_not_found()
         self._test_delete_product_repeatedly()
 
-
     ######################################################################
     #  LIKE ACTION TEST CASES
     ######################################################################
-
 
     def test_like_product(self):
         """ It should Like a Product that is found """
@@ -324,7 +322,7 @@ class TestProductsServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         prev_like_count = test_product.like
-        
+
         # API call to like the product with given id
         response = self.client.put(f"{BASE_URL}/{test_product.id}/like")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -362,7 +360,7 @@ class TestProductsServer(TestCase):
         logging.debug(test_product)
 
         test_product.like = 'aa'
-        response = self.client.post(BASE_URL, json = test_product.serialize())
+        response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_like_negative(self):
@@ -371,6 +369,5 @@ class TestProductsServer(TestCase):
         logging.debug(test_product)
 
         test_product.like = -2
-        response = self.client.post(BASE_URL, json = test_product.serialize())
+        response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-

@@ -119,7 +119,7 @@ class Product(db.Model):
             else None,
         }
 
-    def deserialize(self, data):
+    def deserialize(self, data):    # noqa: max-complexity: 12
         """
         Deserializes a Product from a dictionary
 
@@ -129,8 +129,7 @@ class Product(db.Model):
         try:
             self.id = data["id"]
             self.name = data["name"]
-            if "desc" in data:
-                self.desc = data["desc"]
+            self.desc = data["desc"] if "desc" in data else None
 
             if isinstance(data["price"], float):
                 self.price = data["price"]
