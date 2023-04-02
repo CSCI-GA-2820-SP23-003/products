@@ -174,7 +174,6 @@ def like_products(product_id):
     """
 
     app.logger.info("Request to like product with id: %s", product_id)
-    check_content_type("application/json")
 
     product = Product.find(product_id)
     if not product:
@@ -184,8 +183,6 @@ def like_products(product_id):
 
     app.logger.info("Product with id [%s] like count before update: %s", product.like)
 
-    product.deserialize(request.get_json())
-    product.id = product_id
     product.like += 1
     product.update()
     message = product.serialize()

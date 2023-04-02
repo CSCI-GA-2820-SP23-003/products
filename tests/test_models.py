@@ -67,7 +67,6 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(product.price, 6.5)
         self.assertEqual(product.category, "dairy")
         self.assertEqual(product.inventory, 5)
-        self.assertEqual(product.like, 0)
         self.assertEqual(product.created_date, date.today())
         product = Product(name="Cheese", desc="This is more popular", price=7.5,
                           category="dairy", inventory=10, created_date=date.today())

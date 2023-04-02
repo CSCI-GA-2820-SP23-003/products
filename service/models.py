@@ -126,7 +126,7 @@ class Product(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
-            # self.id = data["id"]
+            self.id = data["id"]
             self.name = data["name"]
             if "desc" in data:
                 self.desc = data["desc"]

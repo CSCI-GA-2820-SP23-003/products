@@ -304,8 +304,11 @@ class TestProductsServer(TestCase):
 
     def test_like_product(self):
         """ It should Like a Product that is found """
-        # Create product with default value like = FALSE
-        test_product = ProductFactory.create_batch(1)[0]
+        # Create a product to like
+        test_product = self._create_products(1)[0]
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
         prev_like_count = test_product.like
         
         # API call to like the product with given id
@@ -317,6 +320,10 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertEqual(data["like"], prev_like_count + 1)
+
+        # Like second time
+        response = self.client.put(f"{BASE_URL}/{test_product.id}/like")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
