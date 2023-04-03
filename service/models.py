@@ -15,6 +15,7 @@ price (float) - the price of the product
 category (string) - the category the product belongs to (i.e., tops, shirts)
 inventory (int) - the quantity of the product
 discount (float) - the discount percent of the product (i.e., from 1.0 to 0.1)
+like (int) - the total number of the product is liked
 created_date (timestamp) - the timestamp when the product is created
 modified_date (timestamp) - the timestamp when the product is modified
 deleted_date (timestamp) - the timestamp when the product is deleted
@@ -62,6 +63,7 @@ class Product(db.Model):
     category = db.Column(db.String(63), nullable=False)
     inventory = db.Column(db.Integer(), nullable=False)
     discount = db.Column(db.Float(), nullable=False, default=1)
+    like = db.Column(db.Integer(), nullable=False, default=0)
     created_date = db.Column(db.Date(), nullable=False, default=date.today())
     modified_date = db.Column(db.Date())
     deleted_date = db.Column(db.Date())
@@ -107,6 +109,7 @@ class Product(db.Model):
             "category": self.category,
             "inventory": self.inventory,
             "discount": self.discount,
+            "like": self.like,
             "created_date": self.created_date.isoformat(),
             "modified_date": self.modified_date.isoformat()
             if self.modified_date is not None
@@ -124,7 +127,7 @@ class Product(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
-            # self.id = data["id"]
+            self.id = data["id"]
             self.name = data["name"]
             if "desc" in data:
                 self.desc = data["desc"]
@@ -146,18 +149,23 @@ class Product(db.Model):
             self.category = data["category"]
             self.inventory = data["inventory"]
             self.discount = data["discount"]
+            if isinstance(data["like"], int):
+                self.like = data["like"]
+            else:
+                raise DataValidationError(
+                    "Invalid type for int [like]: " + str(type(data["like"]))
+                )
+
+            if data["like"] >= 0:
+                self.like = data["like"]
+            else:
+                raise DataValidationError(
+                    "Invalid value for like. Like should be a non-negative value"
+                )
+
             self.created_date = date.fromisoformat(data["created_date"])
-            if "modified_date" in data:
-                self.modified_date = date.fromisoformat(data["modified_date"])
-            if "deleted_date" in data:
-                if data["created_date"] <= data["deleted_date"]:
-                    self.deleted_date = date.fromisoformat(data["deleted_date"])
-                else:
-                    raise DataValidationError(
-                        "Invalid value for deleted_date. Deleted_date should be greater than Created_date"
-                    )
-        # except AttributeError as error:
-        #     raise DataValidationError("Invalid attribute: " + error.args[0]) from error
+            self.modified_date = date.fromisoformat(data["modified_date"])
+            self.deleted_date = date.fromisoformat(data["deleted_date"])
         except KeyError as error:
             raise DataValidationError(
                 "Invalid product: missing " + error.args[0]

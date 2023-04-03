@@ -7,7 +7,6 @@ Test cases can be run with the following:
 """
 import os
 import logging
-from datetime import timedelta
 from unittest import TestCase
 
 # from unittest.mock import MagicMock, patch
@@ -157,7 +156,7 @@ class TestProductsServer(TestCase):
         response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_product_type_int(self):
+    def test_create_product_type_float(self):
         """It should identify the price is invalid if price is not type float"""
         test_product = ProductFactory()
         logging.debug(test_product)
@@ -172,15 +171,6 @@ class TestProductsServer(TestCase):
         logging.debug(test_product)
 
         test_product.price = "s"
-        response = self.client.post(BASE_URL, json=test_product.serialize())
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_product_date(self):
-        """It should identify the created_date/ deleted_date is invalid if created_date is greater than deleted_date"""
-        test_product = ProductFactory()
-        logging.debug(test_product)
-
-        test_product.created_date = test_product.deleted_date + timedelta(days=4)
         response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -309,3 +299,72 @@ class TestProductsServer(TestCase):
         self._test_delete_product()
         self._test_delete_product_not_found()
         self._test_delete_product_repeatedly()
+
+    ######################################################################
+    #  LIKE ACTION TEST CASES
+    ######################################################################
+
+    def _test_like_product(self):
+        """ It should Like a Product that is found """
+        # Create a product to like
+        test_product = self._create_products(1)[0]
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        prev_like_count = test_product.like
+
+        # API call to like the product with given id
+        response = self.client.put(f"{BASE_URL}/{test_product.id}/like")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual(data["like"], prev_like_count + 1)
+
+        # Like second time
+        response = self.client.put(f"{BASE_URL}/{test_product.id}/like")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual(data["like"], prev_like_count + 2)
+
+    def _test_like_product_not_found(self):
+        """ It should not Like a Product thats not found """
+        test_product = ProductFactory()
+        response = self.client.put(
+            f"{BASE_URL}/{test_product.id}/like", json=test_product.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+
+    def _test_create_product_string_like(self):
+        """ It should identify the Like is invalid if like count is a string """
+        test_product = ProductFactory()
+        logging.debug(test_product)
+
+        test_product.like = 'aa'
+        response = self.client.post(BASE_URL, json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def _test_create_like_negative(self):
+        """ It should identify the Like is invalid if like count is negative """
+        test_product = ProductFactory()
+        logging.debug(test_product)
+
+        test_product.like = -2
+        response = self.client.post(BASE_URL, json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_like_methods(self):
+        """It should test all the like test function"""
+        self._test_like_product()
+        self._test_like_product_not_found()
+        self._test_create_product_string_like()
+        self._test_create_like_negative()

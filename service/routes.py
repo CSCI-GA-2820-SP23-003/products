@@ -162,6 +162,37 @@ def list_products():
 
 
 ######################################################################
+# LIKE PRODUCTS
+######################################################################
+
+
+@app.route("/products/<int:product_id>/like", methods=["PUT"])
+def like_products(product_id):
+    """
+    Like action for an existing Product
+    This endpoint will preform LIKE action for a Product based on its id, incrementing count by 1
+    """
+
+    app.logger.info("Request to like product with id: %s", product_id)
+
+    product = Product.find(product_id)
+    if not product:
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found."
+        )
+
+    app.logger.info("Product with id [%s] like count before update: %s", product.like)
+
+    product.like += 1
+    product.update()
+    message = product.serialize()
+
+    app.logger.info("Product with id [%s] updated.", product.id)
+    app.logger.info("Product with id [%s] like count after update: %s", product.like)
+    return jsonify(message), status.HTTP_200_OK
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
