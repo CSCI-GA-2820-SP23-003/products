@@ -119,7 +119,7 @@ class Product(db.Model):
             else None,
         }
 
-    def deserialize(self, data):    # noqa: max-complexity: 12
+    def deserialize(self, data):
         """
         Deserializes a Product from a dictionary
 
@@ -129,7 +129,8 @@ class Product(db.Model):
         try:
             self.id = data["id"]
             self.name = data["name"]
-            self.desc = data["desc"] if "desc" in data else None
+            if "desc" in data:
+                self.desc = data["desc"]
 
             if isinstance(data["price"], float):
                 self.price = data["price"]
@@ -163,17 +164,8 @@ class Product(db.Model):
                 )
 
             self.created_date = date.fromisoformat(data["created_date"])
-            if "modified_date" in data:
-                self.modified_date = date.fromisoformat(data["modified_date"])
-            if "deleted_date" in data:
-                if data["created_date"] <= data["deleted_date"]:
-                    self.deleted_date = date.fromisoformat(data["deleted_date"])
-                else:
-                    raise DataValidationError(
-                        "Invalid value for deleted_date. Deleted_date should be greater than Created_date"
-                    )
-        # except AttributeError as error:
-        #     raise DataValidationError("Invalid attribute: " + error.args[0]) from error
+            self.modified_date = date.fromisoformat(data["modified_date"])
+            self.deleted_date = date.fromisoformat(data["deleted_date"])
         except KeyError as error:
             raise DataValidationError(
                 "Invalid product: missing " + error.args[0]
