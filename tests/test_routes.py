@@ -348,3 +348,10 @@ class TestProductsServer(TestCase):
         test_product.like = -2
         response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_health(self):
+        """Test to check the health status"""
+        response = self.client.get("/health")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["status"], "OK")
