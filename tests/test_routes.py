@@ -236,16 +236,16 @@ class TestProductsServer(TestCase):
             response = self.client.delete(f"{BASE_URL}/{test_product.id}")
             self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_list_products(self, products):
+    def test_list_products(self):
         """This should list all products"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), len(products))
 
-    def test_list_products_with_name(self, products):
+    def test_list_products_with_name(self):
         """List all the products with a particular name"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         name = products[0].name
         count = len([product for product in products if product.name == name])
         response = self.client.get(f"{BASE_URL}?name={name}")
@@ -255,9 +255,9 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["name"], name)
 
-    def test_list_products_with_category(self, products):
+    def test_list_products_with_category(self):
         """List all the products with a particular category"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         category = products[0].category
         count = len([product for product in products if product.category == category])
         response = self.client.get(f"{BASE_URL}?category={category}")
@@ -267,9 +267,9 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["category"], category)
 
-    def test_list_products_with_price(self, products):
+    def test_list_products_with_price(self):
         """List all the products with a particular price"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         price = products[0].price
         count = len([product for product in products if product.price == price])
         response = self.client.get(f"{BASE_URL}?price={price}")
