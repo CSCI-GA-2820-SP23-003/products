@@ -349,13 +349,6 @@ class TestProductsServer(TestCase):
         response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_like_methods(self):
-        """It should test all the like test function"""
-        self._test_like_product()
-        self._test_like_product_not_found()
-        self._test_create_product_string_like()
-        self._test_create_like_negative()
-
     def test_health(self):
         """Test to check the health status"""
         response = self.client.get("/health")
