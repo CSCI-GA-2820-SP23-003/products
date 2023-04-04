@@ -216,18 +216,18 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
-    def _test_delete_product_not_found(self):
+    def test_delete_product_not_found(self):
         """It should delete a Product thats not found"""
         response = self.client.delete(f"{BASE_URL}/0")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def _test_delete_product(self):
+    def test_delete_product(self):
         """It should delete a Product thats found"""
         test_product = self._create_products(1)[0]
         response = self.client.delete(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def _test_delete_product_repeatedly(self):
+    def test_delete_product_repeatedly(self):
         """It should delete a Product thats already deleted"""
         test_product = self._create_products(1)[0]
         num_items = 5
@@ -293,12 +293,6 @@ class TestProductsServer(TestCase):
         self._test_list_products_with_category(products)
         self._test_list_products_with_name(products)
         self._test_list_products(products)
-
-    def test_create_methods(self):
-        """It should test all the delete test function"""
-        self._test_delete_product()
-        self._test_delete_product_not_found()
-        self._test_delete_product_repeatedly()
 
     ######################################################################
     #  LIKE ACTION TEST CASES
