@@ -235,14 +235,14 @@ class TestProductsServer(TestCase):
             response = self.client.delete(f"{BASE_URL}/{test_product.id}")
             self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def _test_list_products(self, products):
+    def test_list_products(self, products):
         """This should list all products"""
         # products = self._create_products(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), len(products))
 
-    def _test_list_products_with_name(self, products):
+    def test_list_products_with_name(self, products):
         """List all the products with a particular name"""
         # products = self._create_products(5)
         name = products[0].name
@@ -254,7 +254,7 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["name"], name)
 
-    def _test_list_products_with_category(self, products):
+    def test_list_products_with_category(self, products):
         """List all the products with a particular category"""
         # products = self._create_products(5)
         category = products[0].category
@@ -266,7 +266,7 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["category"], category)
 
-    def _test_list_products_with_price(self, products):
+    def test_list_products_with_price(self, products):
         """List all the products with a particular price"""
         # products = self._create_products(5)
         price = products[0].price
@@ -285,14 +285,6 @@ class TestProductsServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         data = response.get_json()
         logging.debug("Response data = %s", data)
-
-    def test_list_methods(self):
-        """It should test all the list test function"""
-        products = self._create_products(5)
-        self._test_list_products_with_price(products)
-        self._test_list_products_with_category(products)
-        self._test_list_products_with_name(products)
-        self._test_list_products(products)
 
     ######################################################################
     #  LIKE ACTION TEST CASES
