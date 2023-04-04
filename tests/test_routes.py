@@ -27,6 +27,7 @@ BASE_URL = "/products"
 
 
 class TestProductsServer(TestCase):
+    # pylint: disable=too-many-public-methods
     """REST API Server Tests"""
 
     @classmethod
@@ -216,18 +217,18 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
-    def _test_delete_product_not_found(self):
+    def test_delete_product_not_found(self):
         """It should delete a Product thats not found"""
         response = self.client.delete(f"{BASE_URL}/0")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def _test_delete_product(self):
+    def test_delete_product(self):
         """It should delete a Product thats found"""
         test_product = self._create_products(1)[0]
         response = self.client.delete(f"{BASE_URL}/{test_product.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def _test_delete_product_repeatedly(self):
+    def test_delete_product_repeatedly(self):
         """It should delete a Product thats already deleted"""
         test_product = self._create_products(1)[0]
         num_items = 5
@@ -235,16 +236,16 @@ class TestProductsServer(TestCase):
             response = self.client.delete(f"{BASE_URL}/{test_product.id}")
             self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def _test_list_products(self, products):
+    def test_list_products(self):
         """This should list all products"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.get_json()), len(products))
 
-    def _test_list_products_with_name(self, products):
+    def test_list_products_with_name(self):
         """List all the products with a particular name"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         name = products[0].name
         count = len([product for product in products if product.name == name])
         response = self.client.get(f"{BASE_URL}?name={name}")
@@ -254,9 +255,9 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["name"], name)
 
-    def _test_list_products_with_category(self, products):
+    def test_list_products_with_category(self):
         """List all the products with a particular category"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         category = products[0].category
         count = len([product for product in products if product.category == category])
         response = self.client.get(f"{BASE_URL}?category={category}")
@@ -266,9 +267,9 @@ class TestProductsServer(TestCase):
         for product in response_data:
             self.assertEqual(product["category"], category)
 
-    def _test_list_products_with_price(self, products):
+    def test_list_products_with_price(self):
         """List all the products with a particular price"""
-        # products = self._create_products(5)
+        products = self._create_products(5)
         price = products[0].price
         count = len([product for product in products if product.price == price])
         response = self.client.get(f"{BASE_URL}?price={price}")
@@ -286,25 +287,11 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
 
-    def test_list_methods(self):
-        """It should test all the list test function"""
-        products = self._create_products(5)
-        self._test_list_products_with_price(products)
-        self._test_list_products_with_category(products)
-        self._test_list_products_with_name(products)
-        self._test_list_products(products)
-
-    def test_create_methods(self):
-        """It should test all the delete test function"""
-        self._test_delete_product()
-        self._test_delete_product_not_found()
-        self._test_delete_product_repeatedly()
-
     ######################################################################
     #  LIKE ACTION TEST CASES
     ######################################################################
 
-    def _test_like_product(self):
+    def test_like_product(self):
         """It should Like a Product that is found"""
         # Create a product to like
         test_product = self._create_products(1)[0]
@@ -333,7 +320,7 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertEqual(data["like"], prev_like_count + 2)
 
-    def _test_like_product_not_found(self):
+    def test_like_product_not_found(self):
         """It should not Like a Product thats not found"""
         test_product = ProductFactory()
         response = self.client.put(
@@ -344,7 +331,7 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
-    def _test_create_product_string_like(self):
+    def test_create_product_string_like(self):
         """It should identify the Like is invalid if like count is a string"""
         test_product = ProductFactory()
         logging.debug(test_product)
@@ -353,7 +340,7 @@ class TestProductsServer(TestCase):
         response = self.client.post(BASE_URL, json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def _test_create_like_negative(self):
+    def test_create_like_negative(self):
         """It should identify the Like is invalid if like count is negative"""
         test_product = ProductFactory()
         logging.debug(test_product)
