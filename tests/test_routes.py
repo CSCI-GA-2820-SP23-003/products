@@ -27,6 +27,7 @@ BASE_URL = "/products"
 
 
 class TestProductsServer(TestCase):
+    # pylint: disable=too-many-public-methods
     """REST API Server Tests"""
 
     @classmethod
