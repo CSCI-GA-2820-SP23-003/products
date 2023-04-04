@@ -368,3 +368,10 @@ class TestProductsServer(TestCase):
         self._test_like_product_not_found()
         self._test_create_product_string_like()
         self._test_create_like_negative()
+    
+    def test_health(self):
+        """Test to check the health status"""
+        response = self.client.get("/health")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["status"], "OK")
