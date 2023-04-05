@@ -193,6 +193,40 @@ def like_products(product_id):
 
 
 ######################################################################
+# QUERY PRODUCTS
+######################################################################
+@app.route("/products/query", methods=["GET"])
+def query_products():
+    """
+    Query products by name, category, price.
+    """
+    app.logger.info("Request to query products.")
+    name = request.args.get("name")
+    category = request.args.get("category")
+    price = request.args.get("price")
+
+    print(request.args)
+
+    if name:
+        name_products = Product.find_by_name(name)
+    else:
+        name_products = Product.all()
+    if category:
+        category_products = Product.find_by_category(category)
+    else:
+        category_products = Product.all()
+    if price:
+        price_products = Product.find_by_price(price)
+    else:
+        price_products = Product.all()
+    products = list(set(name_products).intersection(category_products, price_products))
+    results = [product.serialize() for product in products]
+    app.logger.info(f"Returning {len(results)} products.")
+    response = jsonify(results), status.HTTP_200_OK
+    return response
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
