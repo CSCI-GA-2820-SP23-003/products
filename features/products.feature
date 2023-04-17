@@ -12,7 +12,7 @@ Background:
         | ice cream    | popular item    | 6.69  | frozen     | 90        | 0.85     | 7574 | 2019-11-18   |               |              |
 
 Scenario: The server is running
-    When I visit the "Home Page"
+    When I visit the "home page"
     Then I should see "Product RESTful Service" in the title
     And I should not see "404 Not Found"
 
