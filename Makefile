@@ -1,5 +1,5 @@
 # These can be overidden with env vars.
-CLUSTER ?= nyu-devops
+CLUSTER ?= nyu-devops-products
 
 .PHONY: help
 help: ## Display this help
@@ -54,7 +54,7 @@ cluster-rm: ## Remove a K3D Kubernetes cluster
 .PHONY: login
 login: ## Login to IBM Cloud using yur api key
 	$(info Logging into IBM Cloud cluster $(CLUSTER)...)
-	ibmcloud login -a cloud.ibm.com -g Default -r us-south --apikey @~/apikey.json
+	ibmcloud login -a cloud.ibm.com -g Default -r us-south --apikey @~/apikey-team.json
 	ibmcloud cr login
 	ibmcloud ks cluster config --cluster $(CLUSTER)
 	ibmcloud ks workers --cluster $(CLUSTER)
