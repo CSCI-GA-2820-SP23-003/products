@@ -13,14 +13,14 @@ Background:
 
 Scenario: The server is running
     When I visit the "home page"
-    Then I should see "Product RESTful Service" in the title
+    Then I should see "Product RESTful API Service" in the title
     And I should not see "404 Not Found"
 
 Scenario: Retrieve products by id
     When I visit the "home page"
     And I set the "Name" to "sangria"
     And I set the "Desc" to "original from Spain"
-    And I set the "Price" to "18"
+    And I set the "Price" to "9.9"
     And I set the "Category" to "cocktail"
     And I set the "Inventory" to "5"
     And I set the "Discount" to "0.9"
@@ -46,7 +46,7 @@ Scenario: Retrieve products by id
     Then I should see the message "SUCCESS"
     And I should see "sangria" in the "Name" field
     And I should see "riginal from Spain" in the "Desc" field
-    And I should see "18" in the "Price" field
+    And I should see "9.9" in the "Price" field
     And I should see "cocktail" in the "Category" field
     And I should see "5" in the "Inventory" field
     And I should see "0,9" in the "Discount" field

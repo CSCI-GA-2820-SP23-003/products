@@ -132,40 +132,37 @@ class Product(db.Model):
             if "desc" in data:
                 self.desc = data["desc"]
 
-            if isinstance(data["price"], float):
-                self.price = data["price"]
-            else:
+            if not isinstance(data["price"], float):
                 raise DataValidationError(
                     "Invalid type for float [price]: " + str(type(data["price"]))
                 )
-
-            if data["price"] >= 0:
-                self.price = data["price"]
-            else:
+            elif data["price"] < 0:
                 raise DataValidationError(
                     "Invalid value for price. Price should be a non-negative value"
                 )
+            else:
+                self.price = data["price"]
 
             self.category = data["category"]
             self.inventory = data["inventory"]
             self.discount = data["discount"]
-            if isinstance(data["like"], int):
-                self.like = data["like"]
-            else:
+
+            if not isinstance(data["like"], int):
                 raise DataValidationError(
                     "Invalid type for int [like]: " + str(type(data["like"]))
                 )
-
-            if data["like"] >= 0:
-                self.like = data["like"]
-            else:
+            elif data["like"] < 0:
                 raise DataValidationError(
                     "Invalid value for like. Like should be a non-negative value"
                 )
+            else:
+                self.like = data["like"]
 
             self.created_date = date.fromisoformat(data["created_date"])
-            self.modified_date = date.fromisoformat(data["modified_date"])
-            self.deleted_date = date.fromisoformat(data["deleted_date"])
+            if data["modified_date"]:
+                self.modified_date = date.fromisoformat(data["modified_date"])
+            if data["deleted_date"]:
+                self.deleted_date = date.fromisoformat(data["deleted_date"])
         except KeyError as error:
             raise DataValidationError(
                 "Invalid product: missing " + error.args[0]
