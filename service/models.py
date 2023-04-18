@@ -136,12 +136,11 @@ class Product(db.Model):
                 raise DataValidationError(
                     "Invalid type for float [price]: " + str(type(data["price"]))
                 )
-            elif data["price"] < 0:
+            if data["price"] < 0:
                 raise DataValidationError(
                     "Invalid value for price. Price should be a non-negative value"
                 )
-            else:
-                self.price = data["price"]
+            self.price = data["price"]
 
             self.category = data["category"]
             self.inventory = data["inventory"]
@@ -151,12 +150,11 @@ class Product(db.Model):
                 raise DataValidationError(
                     "Invalid type for int [like]: " + str(type(data["like"]))
                 )
-            elif data["like"] < 0:
+            if data["like"] < 0:
                 raise DataValidationError(
                     "Invalid value for like. Like should be a non-negative value"
                 )
-            else:
-                self.like = data["like"]
+            self.like = data["like"]
 
             self.created_date = date.fromisoformat(data["created_date"])
             if data["modified_date"]:
