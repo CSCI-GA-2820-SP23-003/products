@@ -129,8 +129,8 @@ class Product(db.Model):
         try:
             self.id = data["id"]
             self.name = data["name"]
-            if "desc" in data:
-                self.desc = data["desc"]
+            # if "desc" in data:
+            self.desc = data["desc"]
 
             if not isinstance(data["price"], float):
                 raise DataValidationError(
