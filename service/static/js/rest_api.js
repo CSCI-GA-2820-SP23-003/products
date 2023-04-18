@@ -49,12 +49,19 @@ $(function () {
         let product_id = $("#product_id").val();
         let name = $("#product_name").val();
         let desc = $("#product_desc").val();
-        let price = $("#product_price").val();
+        let price = parseFloat($("#product_price").val());
         let category = $("#product_category").val();
         let inventory = $("#product_inventory").val();
         let discount = $("#product_discount").val();
-        let like = $("#product_like").val();
+        let like_result = $("#product_like").val();
+        if (like_result.includes("like")){
+            like = 1;
+        }else{
+            like = 0;
+        }
         let created_date = $("#product_created_date").val();
+        let modified_date = created_date
+        let deleted_date = created_date
 
         let data = {
             "id": product_id,
@@ -65,7 +72,9 @@ $(function () {
             "inventory": inventory,
             "discount": discount,
             "like": like,
-            "created_date": created_date
+            "created_date": created_date,
+            "modified_date": modified_date,
+            "deleted_date": deleted_date
         };
 
         $("#flash_message").empty();
@@ -247,21 +256,25 @@ $(function () {
         })
 
         ajax.done(function(res){
-            //alert(res.toSource())
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
             table += '<th class="col-md-2">ID</th>'
             table += '<th class="col-md-2">Name</th>'
+            table += '<th class="col-md-2">Desc</th>'
+            table += '<th class="col-md-2">Price</th>'
             table += '<th class="col-md-2">Category</th>'
-            table += '<th class="col-md-2">Available</th>'
-            table += '<th class="col-md-2">Gender</th>'
-            table += '<th class="col-md-2">Birthday</th>'
+            table += '<th class="col-md-2">Inventory</th>'
+            table += '<th class="col-md-2">Discount</th>'
+            table += '<th class="col-md-2">Like</th>'
+            table += '<th class="col-md-2">Created Date</th>'
+            table += '<th class="col-md-2">Modified Date</th>'
+            table += '<th class="col-md-2">Deleted Date</th>'
             table += '</tr></thead><tbody>'
             let firstProduct = "";
             for(let i = 0; i < res.length; i++) {
                 let product = res[i];
-                table +=  `<tr id="row_${i}"><td>${product.id}</td><td>${product.name}</td>td>${product.desc}</td>td>${product.price}</td><td>${product.category}</td><td>${product.inventory}</td><td>${product.discount}</td><td>${product.like}</td>td>${product.created_date}</td>td>${product.modified_date}</td>td>${product.deleted_date}</td></tr>`;
+                table +=  `<tr id="row_${i}"><td>${product.id}</td><td>${product.name}</td><td>${product.desc}</td><td>${product.price}</td><td>${product.category}</td><td>${product.inventory}</td><td>${product.discount}</td><td>${product.like}</td><td>${product.created_date}</td><td>${product.modified_date}</td><td>${product.deleted_date}</td></tr>`;
                 if (i == 0) {
                     firstProduct = product;
                 }
@@ -274,7 +287,7 @@ $(function () {
                 update_form_data(firstProduct)
             }
 
-            flash_message("Success")
+            flash_message("Success list products")
         });
 
         ajax.fail(function(res){
@@ -283,4 +296,54 @@ $(function () {
 
     });
 
+    // ****************************************
+    // List Products
+    // ****************************************
+    $("#list-btn").click(function(){
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "GET",
+            url: "/products",
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            $("#search_results").empty();
+            let table = '<table class="table table-striped" cellpadding="10">'
+            table += '<thead><tr>'
+            table += '<th class="col-md-2">ID</th>'
+            table += '<th class="col-md-2">Name</th>'
+            table += '<th class="col-md-2">Desc</th>'
+            table += '<th class="col-md-2">Price</th>'
+            table += '<th class="col-md-2">Category</th>'
+            table += '<th class="col-md-2">Inventory</th>'
+            table += '<th class="col-md-2">Discount</th>'
+            table += '<th class="col-md-2">Like</th>'
+            table += '<th class="col-md-2">Created Date</th>'
+            table += '<th class="col-md-2">Modified Date</th>'
+            table += '<th class="col-md-2">Deleted Date</th>'
+            table += '</tr></thead><tbody>'
+            let firstProduct = "";
+            for(let i = 0; i < res.length; i++) {
+                let product = res[i];
+                table +=  `<tr id="row_${i}"><td>${product.id}</td><td>${product.name}</td><td>${product.desc}</td><td>${product.price}</td><td>${product.category}</td><td>${product.inventory}</td><td>${product.discount}</td><td>${product.like}</td><td>${product.created_date}</td><td>${product.modified_date}</td><td>${product.deleted_date}</td></tr>`;
+                if (i == 0) {
+                    firstProduct = product;
+                }
+            }
+            table += '</tbody></table>';
+            $("#search_results").append(table);
+
+            // copy the first result to the form
+            if (firstProduct != "") {
+                update_form_data(firstProduct)
+            }
+
+            flash_message("Success list products")
+        });
+
+    });
 })
