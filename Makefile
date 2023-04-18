@@ -1,5 +1,6 @@
 # These can be overidden with env vars.
 CLUSTER ?= nyu-devops-products
+NAMESPACE ?= nyu-devops-products-cr
 
 .PHONY: help
 help: ## Display this help
