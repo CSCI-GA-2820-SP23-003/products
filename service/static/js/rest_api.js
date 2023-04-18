@@ -49,21 +49,14 @@ $(function () {
         let product_id = $("#product_id").val();
         let name = $("#product_name").val();
         let desc = $("#product_desc").val();
-        let price = $("#product_price").val();
+        let price = parseFloat($("#product_price").val());
         let category = $("#product_category").val();
         let inventory = $("#product_inventory").val();
         let discount = $("#product_discount").val();
-        let like = $("#product_like").val();
+        let like = parseInt($("#product_like").val());
         let created_date = $("#product_created_date").val();
         let modified_date = $("#product_modified_date").val();
         let deleted_date = $("#product_deleted_date").val();
-
-        if (!isNaN(price)) {
-            price = parseFloat(price);
-        }
-        if (!isNaN(like)) {
-            like = parseInt(like);
-        }
 
         let data = {
             "id": product_id,
