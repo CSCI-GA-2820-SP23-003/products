@@ -42,7 +42,7 @@ def step_impl(context):
     # load the database with new products
     for row in context.table:
         payload = {
-            "id": random.randint(0,1000),
+            "id": random.randint(0, 1000),
             "name": row['name'],
             "desc": row['desc'],
             "price": float(row['price']),
