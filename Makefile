@@ -1,6 +1,11 @@
 # These can be overidden with env vars.
 CLUSTER ?= nyu-devops-products
+REGISTRY ?= us.icr.io
 NAMESPACE ?= nyu-devops-products-cr
+IMAGE_NAME ?= products
+IMAGE_TAG ?= 1.0
+IMAGE ?= $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)
+PLATFORM ?= "linux/amd64"
 
 .PHONY: help
 help: ## Display this help
