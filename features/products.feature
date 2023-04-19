@@ -52,3 +52,19 @@ Scenario: Retrieve products by id
     And I should see "0.9" in the "Discount" field
     And I should see "0" in the "Like" field
     And I should see "2019-11-30" in the "Created_date" field
+
+Scenario: List all products
+When I visit the "Home Page"
+And I press the "List" button
+Then I should see the message "Success"
+And I should see "orange juice" in the results
+And I should see "milk" in the results
+And I should not see "leo" in the results
+
+Scenario: Search for products
+When I visit the "Home Page"
+And I set the "Category" to "dairy"
+And I press the "Search" button
+Then I should see the message "Success"
+And I should see "milk" in the results
+And I should not see "orange juice" in the results
