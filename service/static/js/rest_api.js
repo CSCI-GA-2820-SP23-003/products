@@ -21,7 +21,7 @@ $(function () {
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#product_id").val(res.id);
+        $("#product_id").val("");
         $("#product_name").val("");
         $("#product_desc").val("");
         $("#product_price").val("");
@@ -53,10 +53,10 @@ $(function () {
         let category = $("#product_category").val();
         let inventory = $("#product_inventory").val();
         let discount = $("#product_discount").val();
-        let like =parseInt($("#product_like").val());
+        let like = parseInt($("#product_like").val());
         let created_date = $("#product_created_date").val();
-        let modified_date = created_date
-        let deleted_date = created_date
+        let modified_date = $("#product_modified_date").val();
+        let deleted_date = $("#product_deleted_date").val();
 
         let data = {
             "id": product_id,
@@ -254,7 +254,7 @@ $(function () {
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
-            table += '<th class="col-md-2">ID</th>'
+            table += '<th class="col-md-2">Product ID</th>'
             table += '<th class="col-md-2">Name</th>'
             table += '<th class="col-md-2">Desc</th>'
             table += '<th class="col-md-2">Price</th>'
