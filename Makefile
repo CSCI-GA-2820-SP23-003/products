@@ -1,5 +1,11 @@
 # These can be overidden with env vars.
 CLUSTER ?= nyu-devops-products
+REGISTRY ?= us.icr.io
+NAMESPACE ?= nyu-devops-products-cr
+IMAGE_NAME ?= products
+IMAGE_TAG ?= 1.0
+IMAGE ?= $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)
+PLATFORM ?= "linux/amd64"
 
 .PHONY: help
 help: ## Display this help
@@ -51,8 +57,15 @@ cluster-rm: ## Remove a K3D Kubernetes cluster
 	$(info Removing Kubernetes cluster...)
 	k3d cluster delete
 
+############################################################
+# COMMANDS FOR DEPLOYING THE IMAGE
+############################################################
+
+##@ Deployment
+
+
 .PHONY: login
-login: ## Login to IBM Cloud using yur api key
+login: ## Login to IBM Cloud using your api key
 	$(info Logging into IBM Cloud cluster $(CLUSTER)...)
 	ibmcloud login -a cloud.ibm.com -g Default -r us-south --apikey @~/apikey-team.json
 	ibmcloud cr login
@@ -60,8 +73,36 @@ login: ## Login to IBM Cloud using yur api key
 	ibmcloud ks workers --cluster $(CLUSTER)
 	kubectl cluster-info
 
+.PHONY: push
+image-push: ## Push to a Docker image registry
+	$(info Logging into IBM Cloud cluster $(CLUSTER)...)
+	docker push $(IMAGE)
+
 .PHONY: deploy
 depoy: ## Deploy the service on local Kubernetes
 	$(info Deploying service locally...)
 	kubectl apply -f deploy/
 
+############################################################
+# COMMANDS FOR BUILDING THE IMAGE
+############################################################
+
+##@ Image Build
+
+.PHONY: init
+init: export DOCKER_BUILDKIT=1
+init:	## Creates the buildx instance
+	$(info Initializing Builder...)
+	docker buildx create --use --name=qemu
+	docker buildx inspect --bootstrap
+
+.PHONY: build
+build:	## Build multi-platform image with buildx
+	$(info Building multi-platform image $(IMAGE) for $(PLATFORM)...)
+	docker buildx build --file Dockerfile  --pull --platform=$(PLATFORM) --tag $(IMAGE) --load .
+
+.PHONY: remove
+remove:	## Stop and remove the buildx builder
+	$(info Stopping and removing the builder image...)
+	docker buildx stop
+	docker buildx rm
