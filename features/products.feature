@@ -54,17 +54,48 @@ Scenario: Retrieve products by id
     And I should see "2019-11-30" in the "Created_date" field
 
 Scenario: List all products
-When I visit the "Home Page"
-And I press the "List" button
-Then I should see the message "Success"
-And I should see "orange juice" in the results
-And I should see "milk" in the results
-And I should not see "leo" in the results
+    When I visit the "Home Page"
+    And I press the "List" button
+    Then I should see the message "Success"
+    And I should see "orange juice" in the results
+    And I should see "milk" in the results
+    And I should not see "leo" in the results
 
 Scenario: Search for products
-When I visit the "Home Page"
-And I set the "Category" to "dairy"
-And I press the "Search" button
-Then I should see the message "Success"
-And I should see "milk" in the results
-And I should not see "orange juice" in the results
+    When I visit the "Home Page"
+    And I set the "Category" to "dairy"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "milk" in the results
+    And I should not see "orange juice" in the results
+
+Scenario: Like a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "airpods"
+    And I set the "Desc" to "newest"
+    And I set the "Price" to "239.9"
+    And I set the "Category" to "3C product"
+    And I set the "Inventory" to "5"
+    And I set the "Discount" to "1"
+    And I set the "like" to "0"
+    And I set the "Created_date" to "2019-11-30"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "Name" field should be empty
+    And the "Desc" field should be empty
+    And the "Price" field should be empty
+    And the "Category" field should be empty
+    And the "Inventory" field should be empty
+    And the "Discount" field should be empty
+    And the "like" field should be empty
+    And the "Created_date" field should be empty
+    And the "Modified_date" field should be empty
+    And the "Deleted_date" field should be empty
+    When I paste the "Id" field
+    And I press the "Like" button
+    Then I should see the message "Success like a product"
+    And I should not see "1" in the results
+    And I should not see "2" in the results
