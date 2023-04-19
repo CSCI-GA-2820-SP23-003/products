@@ -53,12 +53,7 @@ $(function () {
         let category = $("#product_category").val();
         let inventory = $("#product_inventory").val();
         let discount = $("#product_discount").val();
-        let like_result = $("#product_like").val();
-        if (like_result.includes("like")){
-            like = 1;
-        }else{
-            like = 0;
-        }
+        let like =parseInt($("#product_like").val());
         let created_date = $("#product_created_date").val();
         let modified_date = created_date
         let deleted_date = created_date
@@ -217,7 +212,7 @@ $(function () {
     });
 
     // ****************************************
-    // Search for a Product
+    // Search for Products
     // ****************************************
 
     $("#search-btn").click(function () {
