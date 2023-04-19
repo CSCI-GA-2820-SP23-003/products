@@ -57,14 +57,26 @@ cluster-rm: ## Remove a K3D Kubernetes cluster
 	$(info Removing Kubernetes cluster...)
 	k3d cluster delete
 
+############################################################
+# COMMANDS FOR DEPLOYING THE IMAGE
+############################################################
+
+##@ Deployment
+
+
 .PHONY: login
-login: ## Login to IBM Cloud using yur api key
+login: ## Login to IBM Cloud using your api key
 	$(info Logging into IBM Cloud cluster $(CLUSTER)...)
 	ibmcloud login -a cloud.ibm.com -g Default -r us-south --apikey @~/apikey-team.json
 	ibmcloud cr login
 	ibmcloud ks cluster config --cluster $(CLUSTER)
 	ibmcloud ks workers --cluster $(CLUSTER)
 	kubectl cluster-info
+
+.PHONY: push
+image-push: ## Push to a Docker image registry
+	$(info Logging into IBM Cloud cluster $(CLUSTER)...)
+	docker push $(IMAGE)
 
 .PHONY: deploy
 depoy: ## Deploy the service on local Kubernetes
