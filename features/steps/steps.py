@@ -23,6 +23,7 @@ For information on Waiting until elements are present in the HTML see:
     https://selenium-python.readthedocs.io/waits.html
 """
 import requests
+import random
 from behave import given
 from compare import expect
 
@@ -41,13 +42,14 @@ def step_impl(context):
     # load the database with new products
     for row in context.table:
         payload = {
+            "id": random.randint(0,1000),
             "name": row['name'],
             "desc": row['desc'],
-            "price": row['price'],
+            "price": float(row['price']),
             "category": row['category'],
             "inventory": row['inventory'],
             "discount": row['discount'],
-            "like": row['like'],
+            "like": int(row['like']),
             "created_date": row['created_date'],
             "modified_date": row['modified_date'],
             "deleted_date": row['deleted_date']

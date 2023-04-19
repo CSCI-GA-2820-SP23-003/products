@@ -26,6 +26,7 @@ For information on Waiting until elements are present in the HTML see:
 """
 import logging
 from behave import when, then
+from datetime import datetime
 from compare import expect, ensure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select, WebDriverWait
@@ -54,7 +55,9 @@ def step_impl(context, text_string):
 
 @when('I set the "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
+    print("text string here:", text_string)
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
+    print("element id is:", element_id)
     element = context.driver.find_element_by_id(element_id)
     element.clear()
     element.send_keys(text_string)
