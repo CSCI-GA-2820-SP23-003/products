@@ -56,7 +56,7 @@ product_model = api.inherit(
 product_args = reqparse.RequestParser()
 product_args.add_argument('name', type=str, location='args', required=False, help='List Products by name')
 product_args.add_argument('category', type=str, location='args', required=False, help='List Products by category')
-product_args.add_argument('price', type=inputs.integer, location='args', required=False, help='List Products by Price')
+product_args.add_argument('price', type=str, location='args', required=False, help='List Products by Price')
 
 
 ######################################################################
