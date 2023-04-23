@@ -23,9 +23,9 @@ api = Api(app,
           description='This is a sample Product server.',
           default='products',
           default_label='Product operations',
-          doc='/apidocs', # default also could use doc='/apidocs/'
+          doc='/apidocs',  # default also could use doc='/apidocs/'
           prefix='/api'
-         )
+          )
 
 # Dependencies require we import the routes AFTER the Flask app is created
 # pylint: disable=wrong-import-position, wrong-import-order, cyclic-import

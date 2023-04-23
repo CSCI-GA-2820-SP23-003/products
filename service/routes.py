@@ -8,7 +8,7 @@ POST /products - creates a new Product record in the database
 """
 
 from flask import jsonify, request, url_for, abort
-from flask_restx import fields, reqparse, inputs
+from flask_restx import fields, reqparse
 from service.common import status  # HTTP Status Codes
 from service.models import Product
 
@@ -39,12 +39,12 @@ create_model = api.model('Product', {
                                   description='The day the Product was created'),
     'modified_date': fields.Date(required=False,
                                  description='The day the Product detail was modified'),
-    'deleted_date': fields.Date(required=False, 
+    'deleted_date': fields.Date(required=False,
                                 description='The day the Product was deleted')
 })
 
 product_model = api.inherit(
-    'ProductModel', 
+    'ProductModel',
     create_model,
     {
         'id': fields.String(readOnly=True,
