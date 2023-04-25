@@ -11,13 +11,13 @@ services:
     container_name: project
     volumes:
       - ..:/app
-      # - ~/.bluemix/apikey-team.json:/home/vscode/apikey-team.json
       - ~/.bluemix/project_apikey.json:/home/vscode/apikey.json
     command: sleep infinity
     environment:
       FLASK_APP: service:app
       FLASK_DEBUG: "True"
       # PORT: 8000
+      
       GUNICORN_BIND: "0.0.0.0:8080"
       DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
     networks:
