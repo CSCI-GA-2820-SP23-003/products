@@ -8,11 +8,55 @@ POST /products - creates a new Product record in the database
 """
 
 from flask import jsonify, request, url_for, abort
+from flask_restx import fields, reqparse
 from service.common import status  # HTTP Status Codes
 from service.models import Product
 
 # Import Flask application
-from . import app
+from . import app, api
+
+
+######################################################################
+# Configure the Root route before OpenAPI
+######################################################################
+# Define the model so that the docs reflect what can be sent
+create_model = api.model('Product', {
+    'name': fields.String(required=True,
+                          description='The name of the Product'),
+    'desc': fields.String(required=False,
+                          description='The description of the Product'),
+    'price': fields.Float(required=True,
+                          description='The price of the Product'),
+    'category': fields.String(required=True,
+                              description='The category of Product (e.g., beverage, dairy, fresh food, frozen.)'),
+    'inventory': fields.Integer(required=True,
+                                description='The inventory of the Product'),
+    'discount': fields.Float(required=True,
+                             description='The discount of the Product'),
+    'like': fields.Integer(required=True,
+                           description='The number of like of the Product'),
+    'created_date': fields.String(required=True,
+                                  description='The day the Product was created'),
+    'modified_date': fields.Date(required=False,
+                                 description='The day the Product detail was modified'),
+    'deleted_date': fields.Date(required=False,
+                                description='The day the Product was deleted')
+})
+
+product_model = api.inherit(
+    'ProductModel',
+    create_model,
+    {
+        'id': fields.String(readOnly=True,
+                            description='The unique id assigned internally by service'),
+    }
+)
+
+# query string arguments
+product_args = reqparse.RequestParser()
+product_args.add_argument('name', type=str, location='args', required=False, help='List Products by name')
+product_args.add_argument('category', type=str, location='args', required=False, help='List Products by category')
+product_args.add_argument('price', type=str, location='args', required=False, help='List Products by Price')
 
 
 ######################################################################
@@ -20,7 +64,7 @@ from . import app
 ######################################################################
 @app.route("/")
 def index():
-    """Base URL for our service"""
+    """Index page"""
     return app.send_static_file("index.html")
 
 
