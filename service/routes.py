@@ -40,11 +40,11 @@ create_model = api.model('Product', {
                              description='The discount of the Product'),
     'like': fields.Integer(required=True,
                            description='The number of like of the Product'),
-    'created_date': fields.Date(required=True,
+    'created_date': fields.String(required=True,
                                 description='The day the Product was created'),
-    'modified_date': fields.Date(required=False,
+    'modified_date': fields.String(required=False,
                                  description='The day the Product detail was modified'),
-    'deleted_date': fields.Date(required=False,
+    'deleted_date': fields.String(required=False,
                                 description='The day the Product was deleted')
 })
 
