@@ -41,11 +41,11 @@ create_model = api.model('Product', {
     'like': fields.Integer(required=True,
                            description='The number of like of the Product'),
     'created_date': fields.String(required=True,
-                                description='The day the Product was created'),
+                                  description='The day the Product was created'),
     'modified_date': fields.String(required=False,
-                                 description='The day the Product detail was modified'),
+                                   description='The day the Product detail was modified'),
     'deleted_date': fields.String(required=False,
-                                description='The day the Product was deleted')
+                                  description='The day the Product was deleted')
 })
 
 product_model = api.inherit(
