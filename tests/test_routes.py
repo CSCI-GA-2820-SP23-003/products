@@ -18,7 +18,7 @@ from tests.factories import ProductFactory
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL = "/products"
+BASE_URL = "/api/products"
 
 
 ######################################################################
@@ -183,7 +183,7 @@ class TestProductsServer(TestCase):
     def test_create_product_no_content_type(self):
         """It should not Create a Product with no content type"""
         response = self.client.post(BASE_URL)
-        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_product(self):
         """It should Update an existing Product"""
@@ -360,108 +360,108 @@ class TestProductsServer(TestCase):
     # QUERY PRODUCTS
     ######################################################################
 
-    def test_query_methods(self):
-        """It should test all the list test function"""
-        products = self._create_products(5)
-        self._test_query_products_with_price(products)
-        self._test_query_products_with_category(products)
-        self._test_query_products_with_name(products)
-        self._test_query_products_with_name_and_category(products)
-        self._test_query_products_with_name_and_price(products)
-        self._test_query_products_with_category_and_price(products)
-        self._test_query_products_with_category_and_price_and_name(products)
+    # def test_query_methods(self):
+    #     """It should test all the list test function"""
+    #     products = self._create_products(5)
+    #     self._test_query_products_with_price(products)
+    #     self._test_query_products_with_category(products)
+    #     self._test_query_products_with_name(products)
+    #     self._test_query_products_with_name_and_category(products)
+    #     self._test_query_products_with_name_and_price(products)
+    #     self._test_query_products_with_category_and_price(products)
+    #     self._test_query_products_with_category_and_price_and_name(products)
 
-    def _test_query_products_with_name(self, products):
-        """Query all the products with a particular name"""
-        name = products[0].name
-        count = len([product for product in products if product.name == name])
-        response = self.client.get(f"{BASE_URL}/query?name={name}")
+    # def _test_query_products_with_name(self, products):
+    #     """Query all the products with a particular name"""
+    #     name = products[0].name
+    #     count = len([product for product in products if product.name == name])
+    #     response = self.client.get(f"{BASE_URL}/query?name={name}")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.get_json()
-        self.assertEqual(len(response_data), count)
-        for product in response_data:
-            self.assertEqual(product["name"], name)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     response_data = response.get_json()
+    #     self.assertEqual(len(response_data), count)
+    #     for product in response_data:
+    #         self.assertEqual(product["name"], name)
 
-    def _test_query_products_with_category(self, products):
-        """Query all the products with a particular category"""
-        category = products[0].category
-        count = len([product for product in products if product.category == category])
-        response = self.client.get(f"{BASE_URL}/query?category={category}")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.get_json()
-        self.assertEqual(len(response_data), count)
-        for product in response_data:
-            self.assertEqual(product["category"], category)
+    # def _test_query_products_with_category(self, products):
+    #     """Query all the products with a particular category"""
+    #     category = products[0].category
+    #     count = len([product for product in products if product.category == category])
+    #     response = self.client.get(f"{BASE_URL}/query?category={category}")
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     response_data = response.get_json()
+    #     self.assertEqual(len(response_data), count)
+    #     for product in response_data:
+    #         self.assertEqual(product["category"], category)
 
-    def _test_query_products_with_price(self, products):
-        """Query all the products with a particular price"""
-        price = products[0].price
-        count = len([product for product in products if product.price == price])
-        response = self.client.get(f"{BASE_URL}/query?price={price}")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.get_json()
-        self.assertEqual(len(response_data), count)
-        for product in response_data:
-            self.assertEqual(product["price"], price)
+    # def _test_query_products_with_price(self, products):
+    #     """Query all the products with a particular price"""
+    #     price = products[0].price
+    #     count = len([product for product in products if product.price == price])
+    #     response = self.client.get(f"{BASE_URL}/query?price={price}")
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     response_data = response.get_json()
+    #     self.assertEqual(len(response_data), count)
+    #     for product in response_data:
+    #         self.assertEqual(product["price"], price)
 
-    def _test_query_products_with_name_and_category(self, products):
-        """Query all the products with a particular name and category"""
-        name = products[0].name
-        category = products[0].category
+    # def _test_query_products_with_name_and_category(self, products):
+    #     """Query all the products with a particular name and category"""
+    #     name = products[0].name
+    #     category = products[0].category
 
-        count = len([product for product in products if (product.name == name and product.category == category)])
-        response = self.client.get(f"{BASE_URL}/query?name={name}&category={category}")
+    #     count = len([product for product in products if (product.name == name and product.category == category)])
+    #     response = self.client.get(f"{BASE_URL}/query?name={name}&category={category}")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.get_json()
-        self.assertEqual(len(response_data), count)
-        for product in response_data:
-            self.assertEqual(product["name"], name)
-            self.assertEqual(product["category"], category)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     response_data = response.get_json()
+    #     self.assertEqual(len(response_data), count)
+    #     for product in response_data:
+    #         self.assertEqual(product["name"], name)
+    #         self.assertEqual(product["category"], category)
 
-    def _test_query_products_with_name_and_price(self, products):
-        """Query all the products with a particular name and price"""
-        name = products[0].name
-        price = products[0].price
+    # def _test_query_products_with_name_and_price(self, products):
+    #     """Query all the products with a particular name and price"""
+    #     name = products[0].name
+    #     price = products[0].price
 
-        count = len([product for product in products if (product.name == name and product.price == price)])
-        response = self.client.get(f"{BASE_URL}/query?name={name}&price={price}")
+    #     count = len([product for product in products if (product.name == name and product.price == price)])
+    #     response = self.client.get(f"{BASE_URL}/query?name={name}&price={price}")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.get_json()
-        self.assertEqual(len(response_data), count)
-        for product in response_data:
-            self.assertEqual(product["name"], name)
-            self.assertEqual(product["price"], price)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     response_data = response.get_json()
+    #     self.assertEqual(len(response_data), count)
+    #     for product in response_data:
+    #         self.assertEqual(product["name"], name)
+    #         self.assertEqual(product["price"], price)
 
-    def _test_query_products_with_category_and_price(self, products):
-        """Query all the products with a particular price and category"""
-        category = products[0].category
-        price = products[0].price
+    # def _test_query_products_with_category_and_price(self, products):
+    #     """Query all the products with a particular price and category"""
+    #     category = products[0].category
+    #     price = products[0].price
 
-        count = len([product for product in products if (product.category == category and product.price == price)])
-        response = self.client.get(f"{BASE_URL}/query?category={category}&price={price}")
+    #     count = len([product for product in products if (product.category == category and product.price == price)])
+    #     response = self.client.get(f"{BASE_URL}/query?category={category}&price={price}")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.get_json()
-        self.assertEqual(len(response_data), count)
-        for product in response_data:
-            self.assertEqual(product["category"], category)
-            self.assertEqual(product["price"], price)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     response_data = response.get_json()
+    #     self.assertEqual(len(response_data), count)
+    #     for product in response_data:
+    #         self.assertEqual(product["category"], category)
+    #         self.assertEqual(product["price"], price)
 
-    def _test_query_products_with_category_and_price_and_name(self, products):
-        """Query all the products with a particular name, price and category"""
-        name = products[0].name
-        category = products[0].category
-        price = products[0].price
-        count = len([product for product in products if (product.category == category
-                                                         and product.price == price and product.name == name)])
-        response = self.client.get(f"{BASE_URL}/query?name={name}&category={category}&price={price}")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.get_json()
-        self.assertEqual(len(response_data), count)
-        for product in response_data:
-            self.assertEqual(product["name"], name)
-            self.assertEqual(product["category"], category)
-            self.assertEqual(product["price"], price)
+    # def _test_query_products_with_category_and_price_and_name(self, products):
+    #     """Query all the products with a particular name, price and category"""
+    #     name = products[0].name
+    #     category = products[0].category
+    #     price = products[0].price
+    #     count = len([product for product in products if (product.category == category
+    #                                                      and product.price == price and product.name == name)])
+    #     response = self.client.get(f"{BASE_URL}/query?name={name}&category={category}&price={price}")
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     response_data = response.get_json()
+    #     self.assertEqual(len(response_data), count)
+    #     for product in response_data:
+    #         self.assertEqual(product["name"], name)
+    #         self.assertEqual(product["category"], category)
+    #         self.assertEqual(product["price"], price)

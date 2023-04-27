@@ -32,7 +32,7 @@ from compare import expect
 def step_impl(context):
     """ Delete all Products and load new ones """
     # List all of the products and delete them one by one
-    rest_endpoint = f"{context.BASE_URL}/products"
+    rest_endpoint = f"{context.BASE_URL}/api/products"
     context.resp = requests.get(rest_endpoint)
     expect(context.resp.status_code).to_equal(200)
     for product in context.resp.json():
