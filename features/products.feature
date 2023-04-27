@@ -248,7 +248,7 @@ Scenario: Delete a product
     And the "Deleted_date" field should be empty
     When I paste the "Id" field
     And I press the "Retrieve" button
-    Then I should not see the message "Success"
+    Then I should not see "Success"
     And the "Id" field should be empty
     And the "Name" field should be empty
     And the "Desc" field should be empty
