@@ -197,7 +197,7 @@ class ProductCollection(Resource):
             app.logger.info('Returning unfiltered list.')
             products = Product.all()
 
-        # app.logger.info('[%s] Prodcuts returned', len(products))
+        # app.logger.info('[%s] Products returned', len(products))
         results = [product.serialize() for product in products]
         return results, status.HTTP_200_OK
 
