@@ -202,7 +202,7 @@ class ProductCollection(Resource):
         return results, status.HTTP_200_OK
 
     # ------------------------------------------------------------------
-    # ADD A NEW PET
+    # ADD A NEW PRODUCT
     # ------------------------------------------------------------------
     @api.doc('create_products')
     @api.response(400, 'The posted data was not valid')
