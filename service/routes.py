@@ -99,6 +99,7 @@ class ProductResource(Resource):
     # ------------------------------------------------------------------
     # RETRIEVE A PRODUCT
     # ------------------------------------------------------------------
+    @api.doc('get_products')
     @api.response(404, 'Product not found')
     @api.marshal_with(product_model)
     def get(self, product_id):
@@ -117,6 +118,7 @@ class ProductResource(Resource):
     # ------------------------------------------------------------------
     # UPDATE AN EXISTING PRODUCT
     # ------------------------------------------------------------------
+    @api.doc('update_products')
     @api.response(404, 'Product not found')
     @api.response(400, 'The posted Product data was not valid')
     @api.expect(product_model)
@@ -145,6 +147,7 @@ class ProductResource(Resource):
     # ------------------------------------------------------------------
     # DELETE A PRODUCT
     # ------------------------------------------------------------------
+    @api.doc('delete_products')
     @api.response(204, 'Product deleted')
     def delete(self, product_id):
         """
@@ -172,6 +175,7 @@ class ProductCollection(Resource):
     # ------------------------------------------------------------------
     # LIST ALL PRODUCTS
     # ------------------------------------------------------------------
+    @api.doc('list_products')
     @api.expect(product_args, validate=True)
     @api.marshal_list_with(product_model)
     def get(self):
@@ -200,6 +204,7 @@ class ProductCollection(Resource):
     # ------------------------------------------------------------------
     # ADD A NEW PET
     # ------------------------------------------------------------------
+    @api.doc('create_products')
     @api.response(400, 'The posted data was not valid')
     @api.expect(create_model)
     @api.marshal_with(product_model, code=201)
@@ -228,6 +233,7 @@ class ProductCollection(Resource):
 @api.param('product_id', 'The Product identifier')
 class LikeResource(Resource):
     """ Like actions on a Product """
+    @api.doc('like_products')
     @api.response(404, 'Product not found')
     def put(self, product_id):
         """
