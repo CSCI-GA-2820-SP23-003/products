@@ -1,7 +1,7 @@
 # These can be overidden with env vars.
 CLUSTER ?= nyu-devops-products
 REGISTRY ?= us.icr.io
-NAMESPACE ?= nyu-devops-products-cr
+NAMESPACE ?= nyu-devops-products-teamcr
 IMAGE_NAME ?= products
 IMAGE_TAG ?= 1.0
 IMAGE ?= $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)
@@ -67,7 +67,7 @@ cluster-rm: ## Remove a K3D Kubernetes cluster
 .PHONY: login
 login: ## Login to IBM Cloud using your api key
 	$(info Logging into IBM Cloud cluster $(CLUSTER)...)
-	ibmcloud login -a cloud.ibm.com -g Default -r us-south --apikey @~/apikey-team.json
+	ibmcloud login -a cloud.ibm.com -g Default -r us-south --apikey @~/apikey.json
 	ibmcloud cr login
 	ibmcloud ks cluster config --cluster $(CLUSTER)
 	ibmcloud ks workers --cluster $(CLUSTER)
