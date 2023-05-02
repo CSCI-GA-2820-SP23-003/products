@@ -24,7 +24,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: products
-        image: us.icr.io/nyu-devops-products-cr/products:1.0
+        image: us.icr.io/nyu-devops-products-teamcr/products:1.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
