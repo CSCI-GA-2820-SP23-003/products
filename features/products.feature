@@ -183,6 +183,7 @@ Scenario: Create a product
     And I should see "0" in the "Like" field
     And I should see "2019-11-30" in the "Created_date" field
 
+@wip
 Scenario: Delete a product
     When I visit the "home page"
     And I set the "Name" to "sangria"
