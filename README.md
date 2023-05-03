@@ -15,8 +15,9 @@ This project the code for Product service. The `/service` folder contains the  `
 and the service separately.
 
 ## Our Service End Point
+The service is currently hosted on a Kubernetes Cluster on IBM Cloud.
 
-- Dev End Point: http://169.51.207.249:31001/
+- Dev End Point:  http://169.51.207.249:31001/
 - Prod End Point: http://169.51.207.249:31006/
 - Our Pipeline: https://cloud.ibm.com/devops/pipelines/562cb654-4cd4-43ba-9a03-ab1c4351c784?env_id=ibm:yp:us-south
 
@@ -29,7 +30,10 @@ Before Run, make sure you have install [Docker Desktop](https://www.docker.com/p
 - Run ```flask run``` command on the terminal
 - The service is available at localhost: ```http://localhost:8000```
 
-To run the all the test cases locally, please run the command nosetests. The test cases have 96% code coverage currently.
+To run the all the test cases locally, please run the command ```nosetests```. The test cases have 99% code coverage currently.
+
+To run the BDD tests, first start the service in a terminal by running ```honcho start``` and then run ```behave``` in another terminal.
+
 
 ## Products Service APIs
 
@@ -42,11 +46,13 @@ GET `/`
 
 | Endpoint        | Methods | Rule
 | --------------- | ------- | --------------------------
-| create_products | POST    | /products
-| delete_products | DELETE  | /products/{int:product_id}
-| get_products    | GET     | /products/{int:product_id}
-| list_products   | GET     | /products
-|update_products  | PUT     | /products/{int:product_id}
+| create_products | POST    | ```/products```
+| delete_products | DELETE  | ```/products/{int:product_id}```
+| get_products    | GET     | ```/products/{int:product_id}```
+| list_products   | GET     | ```/products```
+| search_products | GET     | ```/products?<query_field>=<query_value>```
+| update_products | PUT     | ```/products/{int:product_id}```
+| like_products   | PUT     | ```/prouducts/{int:product_id}/like```
 
 
 ## Product Service APIs - Usage
@@ -74,7 +80,8 @@ Request Body (JSON)
   "created_date": "2023-03-07",
   "inventory": 5,
   "desc": "This is more popular",
-  "discount": 1
+  "discount": 1,
+  "like": 0
 }
 ```
 
@@ -90,7 +97,8 @@ Success Response : `HTTP_201_CREATED`
   "inventory": 5,
   "modified_date": null,
   "name": "Cheese",
-  "price": 0.5
+  "price": 0.5,
+  "like": 0
 }
 ```
 
@@ -120,7 +128,8 @@ Success Response : `HTTP_200_OK`
   "inventory": 5,
   "modified_date": null,
   "name": "Cheese",
-  "price": 0.5
+  "price": 0.5,
+  "like": 0
 }
 ```
 
@@ -156,7 +165,8 @@ Request Body (JSON)
   "created_date": "2023-03-07",
   "inventory": 50,
   "desc": "This is more popular",
-  "discount": 1
+  "discount": 1,
+  "like": 0
 }
 ```
 
@@ -173,7 +183,8 @@ Success Response : `HTTP_200_OK`
   "inventory": 50,
   "modified_date": null,
   "name": "Cheese",
-  "price": 0.5
+  "price": 0.5,
+  "like": 0
 }
 ```
 
@@ -229,11 +240,44 @@ Success Response : `HTTP_200_OK`
     "inventory": 5,
     "modified_date": null,
     "name": "Cheese",
-    "price": 0.5
+    "price": 0.5,
+    "like": 0
   }
 ]
 ```
 
+### Like a Products
+
+URL : `http://127.0.0.1:8000/products/{int:product_id}/like`
+
+Method : PUT
+
+Auth required : No
+
+Permissions required : None
+
+Like a Product with given id
+
+Example:
+
+Success Response : `HTTP_200_OK`
+```
+[
+  {
+    "category": "dairy",
+    "created_date": "2023-03-07",
+    "deleted_date": null,
+    "desc": "This is more popular",
+    "discount": 1.0,
+    "id": 954,
+    "inventory": 5,
+    "modified_date": null,
+    "name": "Cheese",
+    "price": 0.5,
+    "like": 1
+  }
+]
+```
 
 ## Contents
 
@@ -256,11 +300,26 @@ service/                   - service python package
     ├── error_handlers.py  - HTTP error handling code
     ├── log_handlers.py    - logging setup code
     └── status.py          - HTTP status constants
+└── static                 - code for UI of the homepage
 
-tests/              - test cases package
-├── __init__.py     - package initializer
-├── test_models.py  - test suite for business models
-└── test_routes.py  - test suite for service routes
+tests/                - test cases package
+├── __init__.py       - package initializer
+├── factories.py      - factory to generate instances of model
+├── test_cli_commands - tests custom flask cli commands
+├── test_models.py    - test suite for business models
+└── test_routes.py    - test suite for service routes
+
+features/             - bdd test cases package
+├── products.feature  - products test scenarios
+├── environment.py    - environment for bdd tests
+└── steps             - code for describing bdd steps
+    ├── steps.py      - steps for products.feature
+    ├── web_steps.py  - steps for web interaction with selenium
+
+deploy/               - yaml files for kubernetes deployment
+├── deployment.yaml   - Deployment for products api
+├── postgresql.yaml   - StatefulSet, Service, Secret for postgres db 
+├── service.yaml      - Service for products api
 ```
 
 ## License
