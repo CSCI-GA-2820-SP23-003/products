@@ -51,7 +51,7 @@ $(function () {
         let desc = $("#product_desc").val();
         let price = parseFloat($("#product_price").val());
         let category = $("#product_category").val();
-        let inventory = $("#product_inventory").val();
+        let inventory = parseInt($("#product_inventory").val());
         let discount = $("#product_discount").val();
         let like = parseInt($("#product_like").val());
         let created_date = $("#product_created_date").val();
@@ -103,7 +103,7 @@ $(function () {
         let desc = $("#product_desc").val();
         let price = parseFloat($("#product_price").val());
         let category = $("#product_category").val();
-        let inventory = $("#product_inventory").val();
+        let inventory = parseInt($("#product_inventory").val());
         let discount = $("#product_discount").val();
         let like = parseInt($("#product_like").val());
         let created_date = $("#product_created_date").val();

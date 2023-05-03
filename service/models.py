@@ -134,17 +134,29 @@ class Product(db.Model):
             # if "desc" in data:
             self.desc = data["desc"]
 
-            if not isinstance(data["price"], (float, int)):
+            if not isinstance(data["price"], (float, int)) or data["price"] < 0:
                 raise DataValidationError(
-                    "Invalid type for number [price]: " + str(type(data["price"]))
+                    "Invalid type for non-negative [price]: " + str(type(data["price"]))
                 )
-            if data["price"] < 0:
-                raise DataValidationError(
-                    "Invalid value for price. Price should be a non-negative value"
-                )
+            # if data["price"] < 0:
+            #     raise DataValidationError(
+            #         "Invalid value for price. Price should be a non-negative value"
+            #     )
             self.price = data["price"]
 
             self.category = data["category"]
+            if not isinstance(data["inventory"], int) or data["inventory"] < 0:
+                raise DataValidationError(
+                    "Invalid type for non-negative [inventory]"
+                )
+            # if not isinstance(data["inventory"], int):
+            #     raise DataValidationError(
+            #         "Invalid type for int [inventory]: " + str(type(data["inventory"]))
+            #     )
+            # if data["inventory"] < 0:
+            #     raise DataValidationError(
+            #         "Invalid value for inventory. Inventory should be a non-negative value"
+            #     )
             self.inventory = data["inventory"]
             self.discount = data["discount"]
 
