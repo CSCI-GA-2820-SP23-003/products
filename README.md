@@ -22,7 +22,17 @@ Before Run, make sure you have install [Docker Desktop](https://www.docker.com/p
 - Run ```flask run``` command on the terminal
 - The service is available at localhost: ```http://localhost:8000```
 
-To run the all the test cases locally, please run the command nosetests. The test cases have 96% code coverage currently.
+To run the all the test cases locally, please run the command ```nosetests```. The test cases have 99% code coverage currently.
+
+To run the BDD tests, first start the service in a terminal by running ```honcho start``` and then run ```behave``` in another terminal.
+
+
+## Using the Service on Cloud and Kubernetes
+The service is currently hosted on a Kubernetes Cluster on IBM Cloud.
+
+- Dev: http://169.51.207.249:31001/ 
+
+- Prod: http://169.51.207.249:31006/
 
 ## Products Service APIs
 
@@ -35,11 +45,13 @@ GET `/`
 
 | Endpoint        | Methods | Rule
 | --------------- | ------- | --------------------------
-| create_products | POST    | /products
-| delete_products | DELETE  | /products/{int:product_id}
-| get_products    | GET     | /products/{int:product_id}
-| list_products   | GET     | /products
-|update_products  | PUT     | /products/{int:product_id}
+| create_products | POST    | ```/products```
+| delete_products | DELETE  | ```/products/{int:product_id}```
+| get_products    | GET     | ```/products/{int:product_id}```
+| list_products   | GET     | ```/products```
+| update_products | PUT     | ```/products/{int:product_id}```
+| search_products | GET     | ```/products?<query_field>=<query_value>```
+| like_products   | PUT     | ```/prouducts/{int:product_id}/like```
 
 
 ## Product Service APIs - Usage
@@ -67,7 +79,8 @@ Request Body (JSON)
   "created_date": "2023-03-07",
   "inventory": 5,
   "desc": "This is more popular",
-  "discount": 1
+  "discount": 1,
+  "like": 0
 }
 ```
 
@@ -83,7 +96,8 @@ Success Response : `HTTP_201_CREATED`
   "inventory": 5,
   "modified_date": null,
   "name": "Cheese",
-  "price": 0.5
+  "price": 0.5,
+  "like": 0
 }
 ```
 
@@ -113,7 +127,8 @@ Success Response : `HTTP_200_OK`
   "inventory": 5,
   "modified_date": null,
   "name": "Cheese",
-  "price": 0.5
+  "price": 0.5,
+  "like": 0
 }
 ```
 
@@ -149,7 +164,8 @@ Request Body (JSON)
   "created_date": "2023-03-07",
   "inventory": 50,
   "desc": "This is more popular",
-  "discount": 1
+  "discount": 1,
+  "like": 0
 }
 ```
 
@@ -166,7 +182,8 @@ Success Response : `HTTP_200_OK`
   "inventory": 50,
   "modified_date": null,
   "name": "Cheese",
-  "price": 0.5
+  "price": 0.5,
+  "like": 0
 }
 ```
 
@@ -222,11 +239,44 @@ Success Response : `HTTP_200_OK`
     "inventory": 5,
     "modified_date": null,
     "name": "Cheese",
-    "price": 0.5
+    "price": 0.5,
+    "like": 0
   }
 ]
 ```
 
+### Like a Products
+
+URL : `http://127.0.0.1:8000/products/{int:product_id}/like`
+
+Method : PUT
+
+Auth required : No
+
+Permissions required : None
+
+Like a Product with given id
+
+Example:
+
+Success Response : `HTTP_200_OK`
+```
+[
+  {
+    "category": "dairy",
+    "created_date": "2023-03-07",
+    "deleted_date": null,
+    "desc": "This is more popular",
+    "discount": 1.0,
+    "id": 954,
+    "inventory": 5,
+    "modified_date": null,
+    "name": "Cheese",
+    "price": 0.5,
+    "like": 1
+  }
+]
+```
 
 ## Contents
 
