@@ -249,6 +249,7 @@ Scenario: Delete a product
     When I paste the "Id" field
     And I press the "Retrieve" button
     Then I should not see "Success"
+    And I press the "Clear" button
     And the "Id" field should be empty
     And the "Name" field should be empty
     And the "Desc" field should be empty
