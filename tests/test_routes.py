@@ -158,13 +158,13 @@ class TestProductsServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_product_type_float(self):
-        """It should identify the price is invalid if price is not type float"""
+        """It should identify the price is valid if price is number but not type float"""
         test_product = ProductFactory()
         logging.debug(test_product)
 
         test_product.price = 19
         response = self.client.post(BASE_URL, json=test_product.serialize())
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_product_price_type_string(self):
         """It should identify the price is invalid if price is not digit"""
@@ -197,6 +197,7 @@ class TestProductsServer(TestCase):
         logging.debug(new_product)
         new_product["name"] = "Tomato"
         new_product["category"] = "vegetable"
+        logging.debug(new_product)
         response = self.client.put(f"{BASE_URL}/{new_product['id']}", json=new_product)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_product = response.get_json()

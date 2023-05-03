@@ -52,8 +52,8 @@ product_model = api.inherit(
     'ProductModel',
     create_model,
     {
-        'id': fields.String(readOnly=True,
-                            description='The unique id assigned internally by service'),
+        'id': fields.Integer(readOnly=True,
+                             description='The unique id assigned internally by service'),
     }
 )
 
@@ -109,6 +109,8 @@ class ProductResource(Resource):
         This endpoint will return a Product based on it's id
         """
         app.logger.info("Request for product with id: %s", product_id)
+        if not product_id.isdigit():
+            abort(status.HTTP_400_BAD_REQUEST, "Required digits for Product Id.")
         product = Product.find(product_id)
         if not product:
             abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
@@ -130,6 +132,9 @@ class ProductResource(Resource):
         This endpoint will update a Product based the body that is posted
         """
         app.logger.info("Request to update product with id: %s", product_id)
+        if not product_id.isdigit():
+            abort(status.HTTP_400_BAD_REQUEST, "Required digits for Product Id.")
+
         product = Product.find(product_id)
 
         if not product:
@@ -156,6 +161,8 @@ class ProductResource(Resource):
         This endpoint will delete a Product based the id specified in the path
         """
         app.logger.info("Request to delete product with id: %s", product_id)
+        if not product_id.isdigit():
+            abort(status.HTTP_400_BAD_REQUEST, "Required digits for Product Id.")
         product = Product.find(product_id)
 
         if product:
@@ -243,6 +250,8 @@ class LikeResource(Resource):
         """
         app.logger.info("Request to like product with id: %s", product_id)
 
+        if not product_id.isdigit():
+            abort(status.HTTP_400_BAD_REQUEST, "Required digits for Product Id.")
         product = Product.find(product_id)
         if not product:
             abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")

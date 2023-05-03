@@ -91,6 +91,8 @@ class Product(db.Model):
         logger.info("Saving %s", self.name)
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
+        if self.inventory < 0:
+            raise DataValidationError("Update called with invalid Inventory field")
         db.session.commit()
 
     def delete(self):
@@ -127,14 +129,14 @@ class Product(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
-            self.id = data["id"]
+            # self.id = data["id"]
             self.name = data["name"]
             # if "desc" in data:
             self.desc = data["desc"]
 
-            if not isinstance(data["price"], float):
+            if not isinstance(data["price"], (float, int)):
                 raise DataValidationError(
-                    "Invalid type for float [price]: " + str(type(data["price"]))
+                    "Invalid type for number [price]: " + str(type(data["price"]))
                 )
             if data["price"] < 0:
                 raise DataValidationError(
