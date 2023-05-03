@@ -15,8 +15,9 @@ This project the code for Product service. The `/service` folder contains the  `
 and the service separately.
 
 ## Our Service End Point
+The service is currently hosted on a Kubernetes Cluster on IBM Cloud.
 
-- Dev End Point: http://169.51.207.249:31001/
+- Dev End Point:  http://169.51.207.249:31001/
 - Prod End Point: http://169.51.207.249:31006/
 - Our Pipeline: https://cloud.ibm.com/devops/pipelines/562cb654-4cd4-43ba-9a03-ab1c4351c784?env_id=ibm:yp:us-south
 
@@ -34,13 +35,6 @@ To run the all the test cases locally, please run the command ```nosetests```. T
 To run the BDD tests, first start the service in a terminal by running ```honcho start``` and then run ```behave``` in another terminal.
 
 
-## Using the Service on Cloud and Kubernetes
-The service is currently hosted on a Kubernetes Cluster on IBM Cloud.
-
-- Dev: http://169.51.207.249:31001/ 
-
-- Prod: http://169.51.207.249:31006/
-
 ## Products Service APIs
 
 ### Index
@@ -56,8 +50,8 @@ GET `/`
 | delete_products | DELETE  | ```/products/{int:product_id}```
 | get_products    | GET     | ```/products/{int:product_id}```
 | list_products   | GET     | ```/products```
-| update_products | PUT     | ```/products/{int:product_id}```
 | search_products | GET     | ```/products?<query_field>=<query_value>```
+| update_products | PUT     | ```/products/{int:product_id}```
 | like_products   | PUT     | ```/prouducts/{int:product_id}/like```
 
 
@@ -306,11 +300,26 @@ service/                   - service python package
     ├── error_handlers.py  - HTTP error handling code
     ├── log_handlers.py    - logging setup code
     └── status.py          - HTTP status constants
+└── static                 - code for UI of the homepage
 
-tests/              - test cases package
-├── __init__.py     - package initializer
-├── test_models.py  - test suite for business models
-└── test_routes.py  - test suite for service routes
+tests/                - test cases package
+├── __init__.py       - package initializer
+├── factories.py      - factory to generate instances of model
+├── test_cli_commands - tests custom flask cli commands
+├── test_models.py    - test suite for business models
+└── test_routes.py    - test suite for service routes
+
+features/             - bdd test cases package
+├── products.feature  - products test scenarios
+├── environment.py    - environment for bdd tests
+└── steps             - code for describing bdd steps
+    ├── steps.py      - steps for products.feature
+    ├── web_steps.py  - steps for web interaction with selenium
+
+deploy/               - yaml files for kubernetes deployment
+├── deployment.yaml   - Deployment for products api
+├── postgresql.yaml   - StatefulSet, Service, Secret for postgres db 
+├── service.yaml      - Service for products api
 ```
 
 ## License
