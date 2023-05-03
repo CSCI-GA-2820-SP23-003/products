@@ -97,6 +97,14 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+    def test_get_product_bad_id(self):
+        """It should not Get a Product with bad id"""
+        response = self.client.get(f"{BASE_URL}/eee")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual("Required digits for Product Id.", data["message"])
+
     def test_create_product(self):
         """It should Create a new Product"""
         test_product = ProductFactory()
@@ -158,13 +166,13 @@ class TestProductsServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_product_type_float(self):
-        """It should identify the price is invalid if price is not type float"""
+        """It should identify the price is valid if price is number but not type float"""
         test_product = ProductFactory()
         logging.debug(test_product)
 
         test_product.price = 19
         response = self.client.post(BASE_URL, json=test_product.serialize())
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_product_price_type_string(self):
         """It should identify the price is invalid if price is not digit"""
@@ -197,6 +205,7 @@ class TestProductsServer(TestCase):
         logging.debug(new_product)
         new_product["name"] = "Tomato"
         new_product["category"] = "vegetable"
+        logging.debug(new_product)
         response = self.client.put(f"{BASE_URL}/{new_product['id']}", json=new_product)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_product = response.get_json()
@@ -217,10 +226,29 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+    def test_update_product_bad_id(self):
+        """It should not Update a Product with bad id"""
+        test_product = ProductFactory()
+        response = self.client.put(
+            f"{BASE_URL}/rre", json=test_product.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual("Required digits for Product Id.", data["message"])
+
     def test_delete_product_not_found(self):
         """It should delete a Product thats not found"""
         response = self.client.delete(f"{BASE_URL}/0")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_product_bad_id(self):
+        """It should not delete a Product with bad id"""
+        response = self.client.delete(f"{BASE_URL}/ee0")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual("Required digits for Product Id.", data["message"])
 
     def test_delete_product(self):
         """It should delete a Product thats found"""
@@ -330,6 +358,17 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
+
+    def test_like_product_bad_id(self):
+        """It should not Like a Product with bad id"""
+        test_product = ProductFactory()
+        response = self.client.put(
+            f"{BASE_URL}/esd333/like", json=test_product.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("Required digits for Product Id.", data["message"])
 
     def test_create_product_string_like(self):
         """It should identify the Like is invalid if like count is a string"""
