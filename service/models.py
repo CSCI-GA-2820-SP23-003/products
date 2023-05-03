@@ -91,8 +91,8 @@ class Product(db.Model):
         logger.info("Saving %s", self.name)
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
-        if self.inventory < 0:
-            raise DataValidationError("Update called with invalid Inventory field")
+        # if self.inventory < 0:
+        #     raise DataValidationError("Update called with invalid Inventory field")
         db.session.commit()
 
     def delete(self):

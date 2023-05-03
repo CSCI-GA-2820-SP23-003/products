@@ -97,6 +97,14 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+    def test_get_product_bad_id(self):
+        """It should not Get a Product with bad id"""
+        response = self.client.get(f"{BASE_URL}/eee")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual("Required digits for Product Id.", data["message"])
+
     def test_create_product(self):
         """It should Create a new Product"""
         test_product = ProductFactory()
@@ -218,10 +226,29 @@ class TestProductsServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+    def test_update_product_bad_id(self):
+        """It should not Update a Product with bad id"""
+        test_product = ProductFactory()
+        response = self.client.put(
+            f"{BASE_URL}/rre", json=test_product.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual("Required digits for Product Id.", data["message"])
+
     def test_delete_product_not_found(self):
         """It should delete a Product thats not found"""
         response = self.client.delete(f"{BASE_URL}/0")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_product_bad_id(self):
+        """It should not delete a Product with bad id"""
+        response = self.client.delete(f"{BASE_URL}/ee0")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertEqual("Required digits for Product Id.", data["message"])
 
     def test_delete_product(self):
         """It should delete a Product thats found"""
@@ -331,6 +358,17 @@ class TestProductsServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
+
+    def test_like_product_bad_id(self):
+        """It should not Like a Product with bad id"""
+        test_product = ProductFactory()
+        response = self.client.put(
+            f"{BASE_URL}/esd333/like", json=test_product.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("Required digits for Product Id.", data["message"])
 
     def test_create_product_string_like(self):
         """It should identify the Like is invalid if like count is a string"""
