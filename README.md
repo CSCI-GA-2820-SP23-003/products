@@ -11,7 +11,13 @@ Products Service - Representation of the products for a catalog where merchants 
 
 ## Overview
 
-This project the code for Product service. The `/service` folder contains the  `models.py` file for Product model and a `routes.py` file for Product service. The `/tests` folder has test case for testing the model and the service separately.
+This project the code for Product service. The `/service` folder contains the  `models.py` file for Product model and a `routes.py` file for Product service. The `/tests` folder has test case for testing the model 
+and the service separately.
+
+## Our Service End Point
+
+- Dev End Point: http://169.51.207.249:31001/
+- Prod End Point: http://169.51.207.249:31006/
 
 ## Running the service locally
 Before Run, make sure you have install [Docker Desktop](https://www.docker.com/products/docker-desktop), [Visual Studio Code](https://code.visualstudio.com), [Remote Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) first. Then you could clone the repository and then run the following commands:
